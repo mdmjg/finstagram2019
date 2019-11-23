@@ -1,0 +1,57 @@
+# fetching the photos that will appear on user x's timeline
+
+#query to get the users followed by x
+SELECT username_followed
+FROM Follow 
+WHERE username_follower = x AND followstatus = True
+
+
+# select public photos from y
+SELECT photoID, postingDate, caption
+FROM Photo 
+WHERE allFollowers = True AND photoPoster = y
+
+
+# Select public photos from the users followed by x
+SELECT photoID, postingDate, caption
+FROM Photo
+WHERE allFollowrs = True AND photoPoster IN 
+(SELECT username_followed
+FROM Follow 
+WHERE username_follower = x AND followstatus = True) 
+
+#groups p is IN
+SELECT groupName, owner_username
+FROM BelongTo
+WHERE member_username = p
+
+#select photos shared with friend group p is IN
+SELECT photoID, postingDate, caption
+FROM Photo
+WHERE photoID IN
+(Select photoID 
+FROM SharedWith
+WHERE (groupOwner, groupName) IN 
+SELECT groupName, owner_username
+FROM BelongTo
+WHERE member_username = p)
+
+
+#other idea: join belong to and shared with
+SELECT SharedWith.photoID 
+FROM SharedWith JOIN BelongTo ON (BelongTo.owner_username = SharedWith.groupOwner AND SharedWith.groupName = BelongTo.groupName)
+WHERE BelongTo.member_username = p
+
+
+SELECT photoID, postingDate, caption
+FROM Photo  
+WHERE photoID IN 
+(Select photoID 
+FROM SharedWith
+WHERE (groupOwner, groupName) IN 
+SELECT groupName, owner_username
+FROM BelongTo
+WHERE member_username = p)
+
+
+

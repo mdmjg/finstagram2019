@@ -5,12 +5,24 @@ import pymysql.cursors
 #Initialize the app from Flask
 app = Flask(__name__)
 
+
+
+# todo: make exceptions
+# the login is very similar but we have to make some changes to adapt to our actual database
+
+
+
+
+
+
+
+
 #Configure MySQL
 conn = pymysql.connect(host='localhost',
                        port = 8889,
                        user='root',
                        password='root',
-                       db='FlaskDemo',
+                       db='Finstagram',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -39,7 +51,7 @@ def loginAuth():
     #cursor used to send queries
     cursor = conn.cursor()
     #executes query
-    query = 'SELECT * FROM user WHERE username = %s and password = %s'
+    query = 'SELECT * FROM Person WHERE username = %s and password = %s'
     cursor.execute(query, (username, password))
     #stores the results in a variable
     data = cursor.fetchone()
@@ -66,7 +78,7 @@ def registerAuth():
     #cursor used to send queries
     cursor = conn.cursor()
     #executes query
-    query = 'SELECT * FROM user WHERE username = %s'
+    query = 'SELECT * FROM Person WHERE username = %s'
     cursor.execute(query, (username))
     #stores the results in a variable
     data = cursor.fetchone()
@@ -77,14 +89,14 @@ def registerAuth():
         error = "This user already exists"
         return render_template('register.html', error = error)
     else:
-        ins = 'INSERT INTO user VALUES(%s, %s)'
+        ins = 'INSERT INTO Person VALUES(%s, %s)'
         cursor.execute(ins, (username, password))
         conn.commit()
         cursor.close()
         return render_template('index.html')
 
 
-@app.route('/home')
+@app.route('/home')  # the user's own posts
 def home():
     user = session['username']
     cursor = conn.cursor();
