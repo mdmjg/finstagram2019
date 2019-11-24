@@ -1,6 +1,6 @@
 CREATE TABLE Person(
     username VARCHAR(20), 
-    password CHAR(64), 
+    password CHAR(150), 
     firstName VARCHAR(20),
     lastName VARCHAR(20),
     bio VARCHAR(1000),
