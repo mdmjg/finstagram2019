@@ -47,6 +47,7 @@ def loginAuth():
     #grabs information from the forms
     username = request.form['username']
     password = request.form['password']
+    
 
     #cursor used to send queries
     cursor = conn.cursor()
@@ -74,6 +75,9 @@ def registerAuth():
     #grabs information from the forms
     username = request.form['username']
     password = request.form['password']
+    firstName = request.form['firstName']
+    lastName = request.form['lastName']
+    bio = request.form['bio']
 
     #cursor used to send queries
     cursor = conn.cursor()
@@ -89,8 +93,8 @@ def registerAuth():
         error = "This user already exists"
         return render_template('register.html', error = error)
     else:
-        ins = 'INSERT INTO Person VALUES(%s, %s)'
-        cursor.execute(ins, (username, password))
+        ins = 'INSERT INTO Person VALUES(%s, %s, %s, %s, %s)'
+        cursor.execute(ins, (username, password, firstName, lastName, bio))
         conn.commit()
         cursor.close()
         return render_template('index.html')

@@ -22,8 +22,10 @@ Here are your posts:
 
 {% for line in posts %}
 	<tr>
-		<td>{{line.ts}}</td>
-		<td>{{line.blog_post}}</td>
+		<td>{{line.photoID}}</td>
+		<td>{{line.postingdate}}</td>
+		<td>{{line.filepath}}</td>
+		<td>{{line.caption}}</td>
 	</tr>
 {% endfor %}
 </table>
