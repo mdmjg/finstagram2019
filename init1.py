@@ -1,6 +1,9 @@
 #Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
+import hashlib
+
+SALT = 'cs3083'
 import datetime
 
 #Initialize the app from Flask
@@ -47,14 +50,15 @@ def register():
 def loginAuth():
     #grabs information from the forms
     username = request.form['username']
-    password = request.form['password']
+    password = request.form['password'] + SALT
+    hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
     
 
     #cursor used to send queries
     cursor = conn.cursor()
     #executes query
     query = 'SELECT * FROM Person WHERE username = %s and password = %s'
-    cursor.execute(query, (username, password))
+    cursor.execute(query, (username, hashed_password))
     #stores the results in a variable
     data = cursor.fetchone()
     #use fetchall() if you are expecting more than 1 data row
@@ -67,7 +71,7 @@ def loginAuth():
         return redirect(url_for('home'))
     else:
         #returns an error message to the html page
-        error = 'Invalid login or username'
+        error = 'Invalid username or password.'
         return render_template('login.html', error=error)
 
 #Authenticates the register
@@ -75,10 +79,11 @@ def loginAuth():
 def registerAuth():
     #grabs information from the forms
     username = request.form['username']
-    password = request.form['password']
+    password = request.form['password'] +SALT
     firstName = request.form['firstName']
     lastName = request.form['lastName']
     bio = request.form['bio']
+    hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
     #cursor used to send queries
     cursor = conn.cursor()
@@ -95,7 +100,7 @@ def registerAuth():
         return render_template('register.html', error = error)
     else:
         ins = 'INSERT INTO Person VALUES(%s, %s, %s, %s, %s)'
-        cursor.execute(ins, (username, password, firstName, lastName, bio))
+        cursor.execute(ins, (username, hashed_password, firstName, lastName, bio))
         conn.commit()
         cursor.close()
         return render_template('index.html')
