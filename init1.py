@@ -1,6 +1,7 @@
 #Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
+import datetime
 
 #Initialize the app from Flask
 app = Flask(__name__)
@@ -104,23 +105,57 @@ def registerAuth():
 def home():
     user = session['username']
     cursor = conn.cursor();
-    query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
+    query = 'SELECT username FROM Person WHERE username = %s'
     cursor.execute(query, (user))
     data = cursor.fetchall()
     cursor.close()
     return render_template('home.html', username=user, posts=data)
 
+@app.route('/friendGroup')
+def createFriendGroup():
+    user = session['username']
+    # fetch people that the user follows and list them as options using a radio button
+
+
+
         
 @app.route('/post', methods=['GET', 'POST'])
 def post():
+    # DEAL WITH PHOTOID GETTING RESTARTED EVERYTIME WE RESTART THE PROGRAM?
     username = session['username']
     cursor = conn.cursor();
-    blog = request.form['blog']
-    query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-    cursor.execute(query, (blog, username))
+    caption = request.form['caption']
+    filename = request.form['filename']
+
+    # convert image to binary 
+    binary = convertToBinaryData(filename)
+    # get date of post
+    postingDate = datetime.datetime.today()
+
+    #change this by adding a radio button to the post
+    allFollowers = request.form['allFollowers']
+
+
+
+
+    # insert into the table
+
+    # todo: show images
+
+    query = 'INSERT INTO Photo (postingDate, filepath, allFollowers, caption, photoPoster, binaryPhoto) VALUES(%s, %s, %s, %s, %s, NULL)'
+    cursor.execute(query, (postingDate, filename, allFollowers, caption, username))
     conn.commit()
     cursor.close()
     return redirect(url_for('home'))
+    
+    
+def convertToBinaryData(filename):
+    # Convert digital data to binary format
+    with open(filename, 'rb') as file:
+        binaryData = file.read()
+    return binaryData
+
+
 
 @app.route('/select_blogger')
 def select_blogger():
