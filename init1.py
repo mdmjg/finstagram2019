@@ -110,8 +110,10 @@ def registerAuth():
 def home():
     user = session['username']
     cursor = conn.cursor();
-    query = 'SELECT username FROM Person WHERE username = %s'
-    cursor.execute(query, (user))
+    isFollowing = 'SELECT username_followed FROM follow WHERE username_follower = %s AND followstatus = TRUE'
+    isShared = 'SELECT photoID FROM sharedWith WHERE (%s, groupOwner, groupName) IN (SELECT * FROM belongTo)'
+    query = 'SELECT photoID, photoPoster FROM Photo WHERE photoPoster IN (' + isFollowing + ') AND (allFollowers = TRUE OR (' + isShared + ')) ORDER BY postingdate DESC'
+    cursor.execute(query, (user, user))
     data = cursor.fetchall()
     cursor.close()
     return render_template('home.html', username=user, posts=data)
