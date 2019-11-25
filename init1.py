@@ -111,17 +111,22 @@ def home():
     cursor.close()
     return render_template('home.html', username=user, posts=data)
 
-@app.route('/friendGroup')
 def createFriendGroup():
     user = session['username']
     # fetch people that the user follows and list them as options using a radio button
+    cursor = conn.cursor()
+
+    query = 'SELECT username_followed FROM Follow WHERE username_follower = %s'
+    cursor.execute(query, (user))
+    data = cursor.fetchall()
+    cursor.close()
+    render_template('makeFriendGroup.html', username = user, friends = data)
 
 
 
         
 @app.route('/post', methods=['GET', 'POST'])
 def post():
-    # DEAL WITH PHOTOID GETTING RESTARTED EVERYTIME WE RESTART THE PROGRAM?
     username = session['username']
     cursor = conn.cursor();
     caption = request.form['caption']
