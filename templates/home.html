@@ -4,7 +4,10 @@
 <body>
 <form action="/post" method="POST">
 	<h1>Welcome {{username}}</h1> 
-	<input type="text" name = "blog" placeholder="post" required/> </br>
+	<input type="text" name = "caption" placeholder="caption" required/> </br>
+	<input type="radio" name = "allFollowers" value=1 required/> Make visible to all followers</br>
+	<input type="radio" name = "allFollowers" value=0 required/> Make visible some followers</br>
+	<input type="file" name="filename" required/> </br>
 	<input type="submit" value = Post />
 </form>
 
@@ -16,7 +19,7 @@
 
 Here are your posts:
 
-<table>
+<!-- <table>
 	<th>Time</th>
 	<th>Post</th>
 
@@ -34,7 +37,7 @@ Here are your posts:
 <br>
 <a href="/logout">Logout</a>
 
-</body>
+</body> -->
 
 
 </html>
