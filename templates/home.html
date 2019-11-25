@@ -2,13 +2,51 @@
 <head>
 </head>
 <body>
+	<h1>Welcome {{username}}</h1>
+{% if groups %}
+<form  action = '/shareWithGroup', method = 'POST'>
+	<h1>Select which groups you want to share with</h1>
+	{% for line in groups %} 
+		<input type="checkbox" name="group" value={{line.groupName}}> {{line.groupName}}
+	{% endfor %}
+	<input type="submit" value = Post />
+</form> 
+if we have selected the option to use groups, then we show the page with the previously inputted values
 <form action="/post" method="POST">
-	<h1>Welcome {{username}}</h1> 
+	
 	<input type="text" name = "caption" placeholder="caption" required/> </br>
 	<input type="radio" name = "allFollowers" value=1 required/> Make visible to all followers</br>
 	<input type="radio" name = "allFollowers" value=0 required/> Make visible some followers</br>
 	<input type="file" name="filename" required/> </br>
 	<input type="submit" value = Post />
+</form>
+
+
+<form action="/post" method="POST">
+	
+	<input type="text" name = "caption" placeholder="caption" required/> </br>
+	<input type="radio" name = "allFollowers" value=1 required/> Make visible to all followers</br>
+	<input type="radio" name = "allFollowers" value=0 required/> Make visible some followers</br>
+	<input type="file" name="filename" required/> </br>
+	<input type="submit" value = Post />
+</form>
+{% if groups %}
+<form  action = '/shareWithGroup', method = 'POST'>
+	<h1>Select which groups you want to share with</h1>
+	{% for line in groups %} 
+		<input type="checkbox" name="group" value={{line.groupName}}> {{line.groupName}}
+	{% endfor %}
+	<input type="submit" value = Post />
+</form>
+<form action='/follow' method="POST">
+	<h1>Find friends!</h1>
+	{% for line in usersToFollow %} 
+		<input type="checkbox" name="tofollow" value={{line.username}}> {{line.username}}
+	{% endfor %}
+	<input type="submit" value = Post />
+</form>
+<form action='/createFriendGroup' method = "POST">
+	<input type = 'submit' value = "createGroup" />
 </form>
 
 <style type="text/css">

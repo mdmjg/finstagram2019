@@ -109,18 +109,66 @@ def home():
     cursor.execute(query, (user))
     data = cursor.fetchall()
     cursor.close()
-    return render_template('home.html', username=user, posts=data)
 
+
+
+    # to do: show pending in different color
+    cursor = conn.cursor();
+    query = 'SELECT username from Person WHERE username != %s AND username NOT IN(SELECT username_followed FROM Follow WHERE username_follower = %s and followstatus = 1)'
+    cursor.execute(query, (user, user))
+    usersToFollow = cursor.fetchall()
+    print(usersToFollow)
+    cursor.close()
+
+    #fetch list of users that have not been followed yet
+
+
+    return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow)
+
+@app.route('/follow', methods=['GET', 'POST'])
+def follow():
+    username =  session['username']
+    cursor = conn.cursor();
+    followed = request.form['tofollow']
+    query = 'INSERT Into Follow (username_followed, username_follower, followstatus) VALUES(%s, %s, 0)'
+    cursor.execute(query, (followed, username))
+    conn.commit()
+    cursor.close()
+    return redirect(url_for('home'))
+
+
+@app.route('/createFriendGroup', methods = ['GET', 'POST'])
 def createFriendGroup():
     user = session['username']
     # fetch people that the user follows and list them as options using a radio button
     cursor = conn.cursor()
 
-    query = 'SELECT username_followed FROM Follow WHERE username_follower = %s'
+    query = 'SELECT username_followed FROM Follow WHERE username_follower = %s and followstatus = 1'
     cursor.execute(query, (user))
     data = cursor.fetchall()
     cursor.close()
-    render_template('makeFriendGroup.html', username = user, friends = data)
+    return render_template('makeFriendGroup.html', username = user, friends = data)
+
+@app.route('/submitFriendGroup', methods = ['GET', 'POST'])
+def submitFriendGroup():
+    user = session['username']
+    cursor = conn.cursor()
+    groupName = request.form['groupName']
+    query = 'INSERT INTO FriendGroup (groupOwner, groupName, description) VALUES (%s, %s, NULL)'
+    cursor.execute(query, (user, groupName))
+    cursor.close()
+
+    # to do: allow users to modify friendgroup by adding / deleting members
+
+    cursor = conn.cursor()
+    members = request.form['friend']
+    query = 'INSERT into BelongTo (member_username, owner_username, groupName) VALUES(%s, %s, %s)'
+    cursor.execute(query, (members, user, groupName))
+    conn.commit()
+    cursor.close()
+
+    return redirect(url_for('home'))
+
 
 
 
@@ -139,6 +187,13 @@ def post():
 
     #change this by adding a radio button to the post
     allFollowers = request.form['allFollowers']
+
+    if not allFollowers: # allow user to pick which group they want to share with
+        query = 'SELECT groupName FROM BelongTo WHERE member_username = %s'
+        cursor.execute(query, (user))
+        groups = data.fetchall()
+        cursor.close()
+        return render_template('home.html', groups = groups)
 
 
 

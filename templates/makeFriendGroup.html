@@ -1,1 +1,44 @@
- 
+<html>
+    <head>
+    </head>
+    <body>
+    <form action="/submitFriendGroup" method="POST">
+        <input type="text" name = "groupName" placeholder="Name of Group" required/> </br>
+        <h1>Select friends to add to your group</h1>
+        {% for line in friends %} 
+            <input type="checkbox" name="friend" value={{line.username_followed}}> {{line.username_followed}}
+        {% endfor %}
+        <input type="submit" value = CreateGroup />
+    </form>
+    
+    <style type="text/css">
+        table, th, td{
+            border: 1px solid black;
+        }
+    </style>
+    
+    Here are your posts:
+    
+    <!-- <table>
+        <th>Time</th>
+        <th>Post</th>
+    
+    {% for line in posts %}
+        <tr>
+            <td>{{line.photoID}}</td>
+            <td>{{line.postingdate}}</td>
+            <td>{{line.filepath}}</td>
+            <td>{{line.caption}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    
+    <a href="/select_blogger">Select a blogger</a>
+    <br>
+    <a href="/logout">Logout</a>
+    
+    </body> -->
+    
+    
+    </html>
+    
