@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 # todo: make exceptions
-# the login is very similar but we have to make some changes to adapt to our actual database
+# todo: make the follow update whenever someone follows someone else -> both ways
 
 
 #Configure MySQL
@@ -111,17 +111,20 @@ def home():
 
 
     # to do: show pending in different color
+    #fetch list of users that have not been followed yet
     cursor = conn.cursor();
     query = 'SELECT username from Person WHERE username != %s AND username NOT IN(SELECT username_followed FROM Follow WHERE username_follower = %s and followstatus = 1)'
     cursor.execute(query, (user, user))
     usersToFollow = cursor.fetchall()
-    print(usersToFollow)
+
+    #fetch groups the user belongs to 
+    query2 = 'SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s'
+    cursor.execute(query2, (user, user))
+    groups = cursor.fetchall()
+    print(groups)
     cursor.close()
 
-    #fetch list of users that have not been followed yet
-
-
-    return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow)
+    return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow, groups = groups)
 
 @app.route('/follow', methods=['GET', 'POST'])
 def follow():
@@ -167,9 +170,6 @@ def submitFriendGroup():
 
     return redirect(url_for('home'))
 
-
-
-
         
 @app.route('/post', methods=['GET', 'POST'])
 def post():
@@ -186,13 +186,8 @@ def post():
     #change this by adding a radio button to the post
     allFollowers = request.form['allFollowers']
 
-    if not allFollowers: # allow user to pick which group they want to share with
-        query = 'SELECT groupName FROM BelongTo WHERE member_username = %s'
-        cursor.execute(query, (user))
-        groups = data.fetchall()
-        cursor.close()
-        return render_template('home.html', groups = groups)
 
+    
 
 
 

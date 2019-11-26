@@ -1,53 +1,49 @@
 <html>
 <head>
+	<script src= 
+	"https://code.jquery.com/jquery-1.12.4.min.js"> 
+	</script> 
 </head>
 <body>
 	<h1>Welcome {{username}}</h1>
-{% if groups %}
-<form  action = '/shareWithGroup', method = 'POST'>
-	<h1>Select which groups you want to share with</h1>
-	{% for line in groups %} 
-		<input type="checkbox" name="group" value={{line.groupName}}> {{line.groupName}}
+<div>
+	<form action="/post" method="POST">
+		<input type="text" name = "caption" placeholder="caption" required/> </br>
+		<input type="radio" name = "allFollowers" value=1 required/> Make visible to all followers</br>
+		<input class = "someFollowers" type="radio" name = "allFollowers" value=0 required/> Make visible some followers</br>
+		<input type="file" name="filename" required/> </br>
+		<input type="submit" value = Post />
+	</form>
+	<div class="groups"> 
+			<strong>Select one of your groups</strong>
+	</div>
+	{% for line in groups %}
+	<select>
+			<option> {{line.groupName}} </option>
+	</select>
 	{% endfor %}
-	<input type="submit" value = Post />
-</form> 
-if we have selected the option to use groups, then we show the page with the previously inputted values
-<form action="/post" method="POST">
-	
-	<input type="text" name = "caption" placeholder="caption" required/> </br>
-	<input type="radio" name = "allFollowers" value=1 required/> Make visible to all followers</br>
-	<input type="radio" name = "allFollowers" value=0 required/> Make visible some followers</br>
-	<input type="file" name="filename" required/> </br>
-	<input type="submit" value = Post />
-</form>
+	<script type="text/javascript"> 
+		$(document).ready(function(){
+						$('select').hide();
+						$('.someFollowers').on('change', function(){
+							$('select').show();
+						})
+					}); 
+	</script> 
+</div>
+<div>
+	<form action='/follow' method="POST">
+		<h1>Find friends to follow!</h1>
+		{% for line in usersToFollow %} 
+			<input type="checkbox" name="tofollow" value={{line.username}}> {{line.username}}
+		{% endfor %}
+		<input type="submit" value = Post />
+	</form>
+	<form action='/createFriendGroup' method = "POST">
+		<input type = 'submit' value = "createGroup" />
+	</form>
+</div>
 
-
-<form action="/post" method="POST">
-	
-	<input type="text" name = "caption" placeholder="caption" required/> </br>
-	<input type="radio" name = "allFollowers" value=1 required/> Make visible to all followers</br>
-	<input type="radio" name = "allFollowers" value=0 required/> Make visible some followers</br>
-	<input type="file" name="filename" required/> </br>
-	<input type="submit" value = Post />
-</form>
-{% if groups %}
-<form  action = '/shareWithGroup', method = 'POST'>
-	<h1>Select which groups you want to share with</h1>
-	{% for line in groups %} 
-		<input type="checkbox" name="group" value={{line.groupName}}> {{line.groupName}}
-	{% endfor %}
-	<input type="submit" value = Post />
-</form>
-<form action='/follow' method="POST">
-	<h1>Find friends!</h1>
-	{% for line in usersToFollow %} 
-		<input type="checkbox" name="tofollow" value={{line.username}}> {{line.username}}
-	{% endfor %}
-	<input type="submit" value = Post />
-</form>
-<form action='/createFriendGroup' method = "POST">
-	<input type = 'submit' value = "createGroup" />
-</form>
 
 <style type="text/css">
 	table, th, td{
@@ -55,27 +51,3 @@ if we have selected the option to use groups, then we show the page with the pre
 	}
 </style>
 
-Here are your posts:
-
-<!-- <table>
-	<th>Time</th>
-	<th>Post</th>
-
-{% for line in posts %}
-	<tr>
-		<td>{{line.photoID}}</td>
-		<td>{{line.postingdate}}</td>
-		<td>{{line.filepath}}</td>
-		<td>{{line.caption}}</td>
-	</tr>
-{% endfor %}
-</table>
-
-<a href="/select_blogger">Select a blogger</a>
-<br>
-<a href="/logout">Logout</a>
-
-</body> -->
-
-
-</html>

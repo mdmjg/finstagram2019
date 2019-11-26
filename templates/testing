@@ -1,0 +1,9 @@
+<!-- <form  action = '/shareWithGroup', method = 'POST'>
+	<h1>Select which groups you want to share with</h1>
+	{% for line in groups %} 
+		<input type="checkbox" name="group" value={{line.groupName}}> {{line.groupName}}
+	{% endfor %}
+	<input type="submit" value = Post />
+</form> 
+{% endif %} -->
+<!-- if we have selected the option to use groups, then we show the page with the previously inputted values -->
