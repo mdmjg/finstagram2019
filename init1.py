@@ -2,7 +2,9 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 import datetime
+import hashlib
 
+SALT = 'cs3083'
 #Initialize the app from Flask
 app = Flask(__name__)
 
@@ -10,12 +12,6 @@ app = Flask(__name__)
 
 # todo: make exceptions
 # the login is very similar but we have to make some changes to adapt to our actual database
-
-
-
-
-
-
 
 
 #Configure MySQL
@@ -47,14 +43,15 @@ def register():
 def loginAuth():
     #grabs information from the forms
     username = request.form['username']
-    password = request.form['password']
+    password = request.form['password'] + SALT
+    hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
     
 
     #cursor used to send queries
     cursor = conn.cursor()
     #executes query
     query = 'SELECT * FROM Person WHERE username = %s and password = %s'
-    cursor.execute(query, (username, password))
+    cursor.execute(query, (username, hashed_password))
     #stores the results in a variable
     data = cursor.fetchone()
     #use fetchall() if you are expecting more than 1 data row
@@ -75,10 +72,11 @@ def loginAuth():
 def registerAuth():
     #grabs information from the forms
     username = request.form['username']
-    password = request.form['password']
+    password = request.form['password'] + SALT
     firstName = request.form['firstName']
     lastName = request.form['lastName']
     bio = request.form['bio']
+    hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
     #cursor used to send queries
     cursor = conn.cursor()
@@ -95,7 +93,7 @@ def registerAuth():
         return render_template('register.html', error = error)
     else:
         ins = 'INSERT INTO Person VALUES(%s, %s, %s, %s, %s)'
-        cursor.execute(ins, (username, password, firstName, lastName, bio))
+        cursor.execute(ins, (username, hashed_password, firstName, lastName, bio))
         conn.commit()
         cursor.close()
         return render_template('index.html')
