@@ -117,37 +117,49 @@ def home():
     cursor.execute(query, (user, user))
     usersToFollow = cursor.fetchall()
 
-    #fetch groups the user belongs to 
+    # #fetch groups the user belongs to 
     query2 = 'SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s'
     cursor.execute(query2, (user, user))
     groups = cursor.fetchall()
     print(groups)
 
 
-    # fetch posts visible to user
-    visitiblePostsquery = '
-            SELECT photoID, photoPoster, postingDate, caption
-            FROM Photo
-            WHERE allFollowrs = True AND photoPoster IN 
-            (SELECT username_followed
-            FROM Follow 
-            WHERE username_follower = %s AND followstatus = 1)  OR photoID IN (
-                SELECT photoID
-                FROM SharedWith
-                WHERE (groupOwner, groupName) IN (
-                    SELECT owner_username, groupName
-                    FROM BelongTo
-                    WHERE member_username = %s
-                )
-            )
-            GROUP BY postingDate ASCENDING = FALSE'
+    # # fetch posts visible to user
+    # visitiblePostsquery = '
+    #         SELECT photoID, photoPoster, postingDate, caption
+    #         FROM Photo
+    #         WHERE allFollowrs = True AND photoPoster IN 
+    #         (SELECT username_followed
+    #         FROM Follow 
+    #         WHERE username_follower = %s AND followstatus = 1)  OR photoID IN (
+    #             SELECT photoID
+    #             FROM SharedWith
+    #             WHERE (groupOwner, groupName) IN (
+    #                 SELECT owner_username, groupName
+    #                 FROM BelongTo
+    #                 WHERE member_username = %s
+    #             )
+    #         )
+    #         GROUP BY postingDate ASCENDING = FALSE'
     
-    cursor.execute(visitiblePostsquery, (user, user))
-    visiblePosts = cursor.fetchall()
-    print(visiblePosts)
+    # cursor.execute(visitiblePostsquery, (user, user))
+    # visiblePosts = cursor.fetchall()
+    # print(visiblePosts)
     cursor.close()
 
-    return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow, groups = groups, visiblePosts = visiblePosts)
+    return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow, groups = groups)
+
+
+@app.route('/getFriendRequests', methods =['GET', 'POST'])
+def getFriendRequests():
+    username = session['username']
+    cursor = conn.cursor();
+    query = 'SELECT username_followed FROM Follow WHERE username_follower = %s AND followStatus = 0'
+    cursor.execute(query, (username))
+    requests = cursor.fetchall()
+
+    print("getting friend requests")
+    return render_template('friendRequests.html', requests = requests)
 
 @app.route('/follow', methods=['GET', 'POST'])
 def follow():

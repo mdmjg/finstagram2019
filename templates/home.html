@@ -7,6 +7,11 @@
 <body>
 	<h1>Welcome {{username}}</h1>
 <div>
+	<form action='/getFriendRequests'>
+		<button type='submit'> View Friend Requests</button>
+	</form>
+</div>
+<div>
 	<form action="/post" method="POST">
 		<input type="text" name = "caption" placeholder="caption" required/> </br>
 		<input type="radio" name = "allFollowers" value=1 required/> Make visible to all followers</br>
@@ -43,19 +48,6 @@
 		<input type = 'submit' value = "createGroup" />
 	</form>
 </div>
-
-<div>
-	<form action='/like' method="POST">
-	<hi>Your Feed</hi>
-	{% for line in visiblePosts %}
-		<h2>{visiblePosts.photoPoster}</h2>
-		<h3>{visiblePosts.postingDate}</h3>
-		<h3>{visiblePosts.caption</h3>
-		<input type="checkbox" name = 'likeButton' name = {{visiblePosts.photoID}} value=1>
-		<h2>How do we make it submit without clicking submit?</h2>
-	</form>
-</div>
-
 <style type="text/css">
 	table, th, td{
 		border: 1px solid black;
