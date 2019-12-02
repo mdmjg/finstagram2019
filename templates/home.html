@@ -44,6 +44,17 @@
 	</form>
 </div>
 
+<div>
+	<form action='/like' method="POST">
+	<hi>Your Feed</hi>
+	{% for line in visiblePosts %}
+		<h2>{visiblePosts.photoPoster}</h2>
+		<h3>{visiblePosts.postingDate}</h3>
+		<h3>{visiblePosts.caption</h3>
+		<input type="checkbox" name = 'likeButton' name = {{visiblePosts.photoID}} value=1>
+		<h2>How do we make it submit without clicking submit?</h2>
+	</form>
+</div>
 
 <style type="text/css">
 	table, th, td{

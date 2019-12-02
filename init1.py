@@ -122,9 +122,32 @@ def home():
     cursor.execute(query2, (user, user))
     groups = cursor.fetchall()
     print(groups)
+
+
+    # fetch posts visible to user
+    visitiblePostsquery = '
+            SELECT photoID, photoPoster, postingDate, caption
+            FROM Photo
+            WHERE allFollowrs = True AND photoPoster IN 
+            (SELECT username_followed
+            FROM Follow 
+            WHERE username_follower = %s AND followstatus = 1)  OR photoID IN (
+                SELECT photoID
+                FROM SharedWith
+                WHERE (groupOwner, groupName) IN (
+                    SELECT owner_username, groupName
+                    FROM BelongTo
+                    WHERE member_username = %s
+                )
+            )
+            GROUP BY postingDate ASCENDING = FALSE'
+    
+    cursor.execute(visitiblePostsquery, (user, user))
+    visiblePosts = cursor.fetchall()
+    print(visiblePosts)
     cursor.close()
 
-    return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow, groups = groups)
+    return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow, groups = groups, visiblePosts = visiblePosts)
 
 @app.route('/follow', methods=['GET', 'POST'])
 def follow():
@@ -209,6 +232,26 @@ def convertToBinaryData(filename):
     return binaryData
 
 
+@app.route('/like')
+def like():
+    user = session['username']
+    photoID = request.form[user]
+    liketime = datetime.datetime.today()
+    # todo: include rating
+
+
+    #fetch photoID
+    #fetch liketime
+    #fetch rating -> make rating appear only when u like?
+    cursor = conn.cursor();
+    query = 'INSERT INTO Likes (username, photoID, liketime, rating) VALUES (%s, %d, %s, NULL)'
+    cursor.execute(query, (user, photoID, liketime))
+    cursor.commit()
+    cursor.close()
+
+
+    # what do we return? this is happening live
+    return
 
 @app.route('/select_blogger')
 def select_blogger():

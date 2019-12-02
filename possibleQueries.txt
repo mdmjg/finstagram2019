@@ -3,22 +3,141 @@
 #query to get the users followed by x
 SELECT username_followed
 FROM Follow 
-WHERE username_follower = x AND followstatus = True
+WHERE username_follower = x AND followstatus = 1
 
 
 # select public photos from y
+
+
+# things we want to make visible: photo, first name and last name of poster, timestamp, people who have been tagged if they have accepted the tags, 
+# usernames and ratings of people who have liked the photo and their ratings
+1) select the visible photos by showing the photoID and photoPoster in reverse chronological order
+2) give option to like photo and give ratings
+3) give options to access extra info
+
+1) select photos from followers + from groups where they have been shared
+# Select public photos from the users followed by x
+CREATE VIEW FollowerPhotos AS(
+SELECT photoID, photoPoster, postingDate, caption
+FROM Photo
+WHERE allFollowrs = True AND photoPoster IN 
+(SELECT username_followed
+FROM Follow 
+WHERE username_follower = x AND followstatus = 1) 
+GROUP BY postingDate ASCENDING = FALSE
+)
+
+To get the photos that have been shared with person x, we need to get the names of the groups Person x is in
+SELECT owner_username, groupName 
+FROM BelongTo
+WHERE member_username = x
+
+* now we get the photoIDs of the photos shared in the groups that are returned by the above query
+SELECT photoID
+FROM SharedWith
+WHERE (groupOwner, groupName) IN (
+    SELECT owner_username, groupName
+    FROM BelongTo
+    WHERE member_username = x
+)
+
+* consider doing a join?
+
+
+*now we merge the two queries
+
+SELECT photoID, photoPoster, postingDate, caption
+FROM Photo
+WHERE allFollowrs = True AND photoPoster IN 
+(SELECT username_followed
+FROM Follow 
+WHERE username_follower = x AND followstatus = 1)  OR photoID IN (
+    SELECT photoID
+    FROM SharedWith
+    WHERE (groupOwner, groupName) IN (
+        SELECT owner_username, groupName
+        FROM BelongTo
+        WHERE member_username = x
+    )
+)
+GROUP BY postingDate ASCENDING = FALSE
+
+
+
+
+3) access extra info from photos
+we need: firstname, lastname, timestamp, usernames, first and lastnames of tagged people provided that they have accepted the tags
+# and the usernames of people who have liked the photos and the ratings
+
+1. implement option to tag people 
+2. implement accepting friend requests and tags
+3. get additional info
+
+
+1) when posting, add an extra button that shows a list of all the friends and whether u want to tag them or not
+a) on click on photo display the drop down list ( hard), or just display a list from the start
+... first actually finish the part about sharing with the groups because its not submitting?
+
+# get the group owner and groupName from an invisible form from when u click on the  shared option
+#get the photoID 
+
+consider using one of those cool forms ive used for hackathons for the design
+INSERT INTO SharedWith(groupOwner, groupName, photoID) VALUES (groupOwner, groupName, photoID)
+
+
+
+a) list of people you follow to display peolpe to tag
+i) SELECT username_followed
+FROM Follow
+WHERE username_follower = x AND followStatus = 1
+
+Insert selected people in tags
+
+ii) INSERT INTO Tagged(username, photoID, tagstatus) VALUES (taggedUsername, photoID, 0)
+
+Accepting tag requests -> the idea would be to display the name of the person and the photo?
+
+iii) SELECT username, photoID 
+FROM tagged
+WHERE username = x AND tagstatus = 0
+
+
+
+
+
+2. implement friend requests
+SELECT username_followed
+FROM Follow
+WHERE username_follower = x AND followStatus = 0
+
+
+
+3. implement extra info 
+
+SELECT Po.photoID, Po.photoPoster, Po.postingDate, Po.caption, Pe.firstName, Pe.lastName, T.username
+FROM Photo Po JOIN Person Pe ON (Po.photoPoster = Pe.username) JOIN Tagged T USING (photoID)
+WHERE allFollowrs = True AND AND T.tagstatus = 1 AND photoPoster IN 
+(SELECT username_followed
+FROM Follow 
+WHERE username_follower = x AND followstatus = 1)  OR photoID IN (
+    SELECT photoID
+    FROM SharedWith
+    WHERE (groupOwner, groupName) IN (
+        SELECT owner_username, groupName
+        FROM BelongTo
+        WHERE member_username = x
+    )
+)
+GROUP BY postingDate ASCENDING = FALSE) 
+
+
+
 SELECT photoID, postingDate, caption
 FROM Photo 
 WHERE allFollowers = True AND photoPoster = y
 
 
-# Select public photos from the users followed by x
-SELECT photoID, postingDate, caption
-FROM Photo
-WHERE allFollowrs = True AND photoPoster IN 
-(SELECT username_followed
-FROM Follow 
-WHERE username_follower = x AND followstatus = True) 
+
 
 #groups p is IN
 SELECT groupName, owner_username
