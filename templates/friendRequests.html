@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+<body>
+    <div>
+            <form action='/acceptFriendRequests' method="POST">
+                <h1>Find friends to follow!</h1>
+                {% for line in requests %} 
+                    <input type="checkbox" name="acceptFollow" value={{line.username_follower}}> {{line.username_follower}}
+                {% endfor %}
+                <input type="submit" value = Post />
+            </form>
+            <form action='/createFriendGroup' method = "POST">
+                <input type = 'submit' value = "createGroup" />
+            </form>
+        </div>
+</body>
+</html>

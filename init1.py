@@ -154,9 +154,10 @@ def home():
 def getFriendRequests():
     username = session['username']
     cursor = conn.cursor();
-    query = 'SELECT username_followed FROM Follow WHERE username_follower = %s AND followStatus = 0'
+    query = 'SELECT username_follower FROM Follow WHERE username_followed= %s AND followStatus = 0'
     cursor.execute(query, (username))
     requests = cursor.fetchall()
+    print(requests)
 
     print("getting friend requests")
     return render_template('friendRequests.html', requests = requests)

@@ -4,11 +4,11 @@
     <body>
     <form action="/submitFriendGroup" method="POST">
         <input type="text" name = "groupName" placeholder="Name of Group" required/> </br>
-        <h1>Select friends to add to your group</h1>
+        <h1>Select requests to accept</h1>
         {% for line in friends %} 
-            <input type="checkbox" name="friend" value={{line.username_followed}}> {{line.username_followed}}
+            <input type="checkbox" name="friend" value={{line.username_follower}}> {{line.username_follower}}
         {% endfor %}
-        <input type="submit" value = CreateGroup />
+        <input type="submit" value = AcceptFriendRequests />
     </form>
     
     <style type="text/css">

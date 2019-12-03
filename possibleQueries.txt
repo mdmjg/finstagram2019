@@ -114,6 +114,8 @@ WHERE username_follower = x AND followStatus = 0
 
 3. implement extra info 
 
+#important add option to followback?
+
 SELECT Po.photoID, Po.photoPoster, Po.postingDate, Po.caption, Pe.firstName, Pe.lastName, T.username
 FROM Photo Po JOIN Person Pe ON (Po.photoPoster = Pe.username) JOIN Tagged T USING (photoID)
 WHERE allFollowrs = True AND AND T.tagstatus = 1 AND photoPoster IN 
