@@ -162,6 +162,17 @@ def getFriendRequests():
     print("getting friend requests")
     return render_template('friendRequests.html', requests = requests)
 
+@app.route('/acceptFriendRequests', methods = ['GET', 'POST'])
+def acceptFriendRequests():
+    username = session['username']
+    accepted = request.form['acceptFollow']
+    cursor = conn.cursor();
+    query = 'UPDATE Follow SET followstatus = 1 WHERE username_followed = %s AND username_follower = %s'
+    cursor.execute(query, (username, accepted))
+    conn.commit()   
+    cursor.close()
+    return redirect(url_for('home'))
+
 @app.route('/follow', methods=['GET', 'POST'])
 def follow():
     username =  session['username']
