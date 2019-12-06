@@ -40,6 +40,7 @@
 	<form action='/follow' method="POST">
 		<h1>Find friends to follow!</h1>
 		{% for line in usersToFollow %} 
+			
 			<input type="checkbox" name="tofollow" value={{line.username}}> {{line.username}}
 		{% endfor %}
 		<input type="submit" value = Post />
@@ -49,11 +50,17 @@
 	</form>
 </div>
 <div>
-	<h2>YOUR FEED</h2>
-	{% for line in posts %}
+	<form action = '/like' method = 'POST'>
+		<h1>Your Feed</h1>
+		{% for post in visiblePosts %}
+			<input type = 'hidden' name = 'photoID' value = {{post.photoID}}>
+			<h1>{{post.photoPoster}}</h1>
+			<input type="submit" value = Like />
+	</form>
 	
+	
+	{% endfor %}
 </div>
-
 <style type="text/css">
 	table, th, td{
 		border: 1px solid black;

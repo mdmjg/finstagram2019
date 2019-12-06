@@ -123,31 +123,35 @@ def home():
     groups = cursor.fetchall()
     print(groups)
 
+    #  fetching posts requires to first turn the location of the file into a working blob
 
-    # # fetch posts visible to user
-    # visitiblePostsquery = '
-    #         SELECT photoID, photoPoster, postingDate, caption
-    #         FROM Photo
-    #         WHERE allFollowrs = True AND photoPoster IN 
-    #         (SELECT username_followed
-    #         FROM Follow 
-    #         WHERE username_follower = %s AND followstatus = 1)  OR photoID IN (
-    #             SELECT photoID
-    #             FROM SharedWith
-    #             WHERE (groupOwner, groupName) IN (
-    #                 SELECT owner_username, groupName
-    #                 FROM BelongTo
-    #                 WHERE member_username = %s
-    #             )
-    #         )
-    #         GROUP BY postingDate ASCENDING = FALSE'
+
+    # fetch posts visible to user
+    visiblePostsQuery = """
+            SELECT photoID, photoPoster, postingDate, caption
+            FROM Photo
+            WHERE allFollowErs = True AND photoPoster IN 
+            (SELECT username_followed
+            FROM Follow 
+            WHERE username_follower = %s AND followstatus = 1)  OR photoID IN (
+                SELECT photoID
+                FROM SharedWith
+                WHERE (groupOwner, groupName) IN (
+                    SELECT owner_username, groupName
+                    FROM BelongTo
+                    WHERE member_username = %s
+                )
+            )
+            ORDER BY postingDate DESC
+
+            """
     
-    # cursor.execute(visitiblePostsquery, (user, user))
-    # visiblePosts = cursor.fetchall()
-    # print(visiblePosts)
+    cursor.execute(visiblePostsQuery, (user, user))
+    visiblePosts = cursor.fetchall()
+    print(visiblePosts)
     cursor.close()
 
-    return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow, groups = groups)
+    return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow, groups = groups, visiblePosts = visiblePosts)
 
 
 @app.route('/getFriendRequests', methods =['GET', 'POST'])
@@ -183,6 +187,20 @@ def follow():
     conn.commit()
     cursor.close()
     return redirect(url_for('home'))
+
+@app.route('/like', methods=['GET', 'POST'])
+def like():
+    # add a check to see if post has already been liked or not
+    username = session['username']
+    photoID = request.form['photoID']
+    cursor = conn.cursor();
+    query = 'INSERT INTO Likes(username, photoID, liketime, rating) VALUES(%s, %s, %s, NULL)'
+    cursor.execute(query, (username, photoID, datetime.datetime.now()))
+    conn.commit()
+    cursor.close()
+
+    return redirect(url_for('home'))
+
 
 
 @app.route('/createFriendGroup', methods = ['GET', 'POST'])
@@ -233,17 +251,12 @@ def post():
     #change this by adding a radio button to the post
     allFollowers = request.form['allFollowers']
 
-
-    
-
-
-
     # insert into the table
 
     # todo: show images
 
-    query = 'INSERT INTO Photo (postingDate, filepath, allFollowers, caption, photoPoster, binaryPhoto) VALUES(%s, %s, %s, %s, %s, NULL)'
-    cursor.execute(query, (postingDate, filename, allFollowers, caption, username))
+    query = 'INSERT INTO Photo (postingDate, filepath, allFollowers, caption, photoPoster, binaryPhoto) VALUES(%s, %s, %s, %s, %s, %s)'
+    cursor.execute(query, (postingDate, filename, allFollowers, caption, username, binary))
     conn.commit()
     cursor.close()
     return redirect(url_for('home'))
@@ -255,27 +268,6 @@ def convertToBinaryData(filename):
         binaryData = file.read()
     return binaryData
 
-
-@app.route('/like')
-def like():
-    user = session['username']
-    photoID = request.form[user]
-    liketime = datetime.datetime.today()
-    # todo: include rating
-
-
-    #fetch photoID
-    #fetch liketime
-    #fetch rating -> make rating appear only when u like?
-    cursor = conn.cursor();
-    query = 'INSERT INTO Likes (username, photoID, liketime, rating) VALUES (%s, %d, %s, NULL)'
-    cursor.execute(query, (user, photoID, liketime))
-    cursor.commit()
-    cursor.close()
-
-
-    # what do we return? this is happening live
-    return
 
 @app.route('/select_blogger')
 def select_blogger():
