@@ -2,8 +2,7 @@
 <head>
 </head>
 <body>
-
-<form  action = '/shareWithGroup', method = 'POST'>
+<form  action = '/post', method = 'POST'>
 	<h1>Select which groups you want to share with</h1>
 	{% for line in groups %} 
 		<input type="checkbox" name="group" value={{line.groupName}}> {{line.groupName}}

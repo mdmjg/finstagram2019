@@ -116,6 +116,11 @@ WHERE username_follower = x AND followStatus = 0
 
 #important add option to followback?
 
+for some reason it only fetches one person at a time when u follow. as in, if i click two people, it will only follow the first one
+
+also, it only updates when I restart the program
+
+
 SELECT Po.photoID, Po.photoPoster, Po.postingDate, Po.caption, Pe.firstName, Pe.lastName, T.username
 FROM Photo Po JOIN Person Pe ON (Po.photoPoster = Pe.username) JOIN Tagged T USING (photoID)
 WHERE allFollowrs = True AND AND T.tagstatus = 1 AND photoPoster IN 

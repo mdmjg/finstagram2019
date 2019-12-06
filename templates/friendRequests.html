@@ -15,10 +15,7 @@
                 {% for line in requests %} 
                     <input type="checkbox" name="acceptFollow" value={{line.username_follower}}> {{line.username_follower}}
                 {% endfor %}
-                <input type="submit" value = Post />
-            </form>
-            <form action='/createFriendGroup' method = "POST">
-                <input type = 'submit' value = "createGroup" />
+                <input type="submit" value = Follow />
             </form>
         </div>
 </body>
