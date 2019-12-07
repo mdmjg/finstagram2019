@@ -26,9 +26,9 @@ conn = pymysql.connect(host='localhost',
 #Define a route to hello function
 @app.route('/')
 def hello():
-    return render_template('index.html')
+    return render_template('login.html')
 
-#Define route for login
+
 @app.route('/login')
 def login():
     return render_template('login.html')
@@ -257,6 +257,7 @@ def submitFriendGroup():
 
     return redirect(url_for('home'))
 
+
         
 @app.route('/post', methods=['GET', 'POST'])
 # first fetch the groups, then on submit it will lead to another route that will redirect back to him
@@ -327,6 +328,7 @@ def show_posts():
     data = cursor.fetchall()
     cursor.close()
     return render_template('show_posts.html', poster_name=poster, posts=data)
+    
 
 @app.route('/logout')
 def logout():
