@@ -127,10 +127,30 @@ def home():
 
 
     # fetch posts visible to user
+    # visiblePostsQuery = """
+    #         SELECT photoID, photoPoster, postingDate, caption
+    #         FROM Photo
+    #         WHERE allFollowErs = True AND photoPoster IN 
+    #         (SELECT username_followed
+    #         FROM Follow 
+    #         WHERE username_follower = %s AND followstatus = 1)  OR photoID IN (
+    #             SELECT photoID
+    #             FROM SharedWith
+    #             WHERE (groupOwner, groupName) IN (
+    #                 SELECT owner_username, groupName
+    #                 FROM BelongTo
+    #                 WHERE member_username = %s
+    #             )
+    #         )
+    #         ORDER BY postingDate DESC
+
+    #         """\
+
+    #modify the following to show tagged people too
     visiblePostsQuery = """
-            SELECT photoID, photoPoster, postingDate, caption
-            FROM Photo
-            WHERE allFollowErs = True AND photoPoster IN 
+            SELECT Po.photoID, Po.photoPoster, Po.postingDate, Po.caption, Pe.firstName, Pe.lastName
+            FROM Photo Po JOIN Person Pe ON (Po.photoPoster = Pe.username)
+            WHERE allFollowers = True AND photoPoster IN 
             (SELECT username_followed
             FROM Follow 
             WHERE username_follower = %s AND followstatus = 1)  OR photoID IN (
@@ -142,9 +162,11 @@ def home():
                     WHERE member_username = %s
                 )
             )
-            ORDER BY postingDate DESC
+            ORDER BY postingDate DESC  
 
             """
+
+
     
     cursor.execute(visiblePostsQuery, (user, user))
     visiblePosts = cursor.fetchall()
@@ -237,7 +259,21 @@ def submitFriendGroup():
 
         
 @app.route('/post', methods=['GET', 'POST'])
+# first fetch the groups, then on submit it will lead to another route that will redirect back to him
 def post():
+    user = session['username']
+    cursor = conn.cursor();
+    query = 'SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s'
+    cursor.execute(query, (user, user))
+    groups = cursor.fetchall()
+    cursor.close()
+    print(groups)
+
+    return render_template('post.html', username = user, groups = groups)
+
+
+@app.route('/submitpost', methods = ['GET', 'POST'])
+def submitPost():
     username = session['username']
     cursor = conn.cursor();
     caption = request.form['caption']
