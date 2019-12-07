@@ -113,7 +113,7 @@ def home():
     # to do: show pending in different color
     #fetch list of users that have not been followed yet
     cursor = conn.cursor();
-    query = 'SELECT username from Person WHERE username != %s AND username NOT IN(SELECT username_followed FROM Follow WHERE username_follower = %s and followstatus = 1)'
+    query = 'SELECT username, bio from Person WHERE username != %s AND username NOT IN(SELECT username_followed FROM Follow WHERE username_follower = %s)'
     cursor.execute(query, (user, user))
     usersToFollow = cursor.fetchall()
 
