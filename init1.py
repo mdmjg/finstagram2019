@@ -121,7 +121,6 @@ def home():
     query2 = 'SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s'
     cursor.execute(query2, (user, user))
     groups = cursor.fetchall()
-    print(groups)
 
     #  fetching posts requires to first turn the location of the file into a working blob
 
@@ -170,7 +169,6 @@ def home():
     
     cursor.execute(visiblePostsQuery, (user, user))
     visiblePosts = cursor.fetchall()
-    print(visiblePosts)
     cursor.close()
 
     return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow, groups = groups, visiblePosts = visiblePosts)
@@ -183,7 +181,6 @@ def getFriendRequests():
     query = 'SELECT username_follower FROM Follow WHERE username_followed= %s AND followStatus = 0'
     cursor.execute(query, (username))
     requests = cursor.fetchall()
-    print(requests)
 
     print("getting friend requests")
     return render_template('friendRequests.html', requests = requests)
@@ -202,10 +199,8 @@ def acceptFriendRequests():
 @app.route('/follow', methods=['GET', 'POST'])
 def follow():
     username =  session['username']
-    print("the username is", username)
     cursor = conn.cursor();
     followed = request.form['tofollow']
-    print("we will follow", followed)
     query = 'INSERT Into Follow (username_followed, username_follower, followstatus) VALUES(%s, %s, 0)'
     cursor.execute(query, (followed, username))
     conn.commit()
@@ -251,9 +246,13 @@ def submitFriendGroup():
     # to do: allow users to modify friendgroup by adding / deleting members
 
     cursor = conn.cursor()
-    members = request.form['friend']
+    members = request.form.getlist("toAdd")
+    to_insert = []
+    for member in members:
+        to_insert.append((member, user, groupName))
+
     query = 'INSERT into BelongTo (member_username, owner_username, groupName) VALUES(%s, %s, %s)'
-    cursor.execute(query, (members, user, groupName))
+    cursor.executemany(query, to_insert)
     conn.commit()
     cursor.close()
 
@@ -290,13 +289,47 @@ def submitPost():
     #change this by adding a radio button to the post
     allFollowers = request.form['allFollowers']
 
+    
+
     # insert into the table
 
     # todo: show images
 
     query = 'INSERT INTO Photo (postingDate, filepath, allFollowers, caption, photoPoster, binaryPhoto) VALUES(%s, %s, %s, %s, %s, %s)'
     cursor.execute(query, (postingDate, filename, allFollowers, caption, username, binary))
+    id = cursor.lastrowid
     conn.commit()
+
+    if allFollowers == "0":
+        # fetch name of groupOwner using the name of the group and the member
+        fetch_group_owner = 'SELECT owner_username, groupName FROM BelongTo WHERE groupName = %s AND (member_username = %s OR owner_username = %s)'
+        groups_to_share = request.form.getlist("toShare")
+        fetch_list = []
+        for group in groups_to_share:
+            fetch_list.append((group, username, username))
+        
+        
+        cursor.executemany(fetch_group_owner, fetch_list)
+        group_owners = cursor.fetchall()
+        print("group owners and their group")
+        print(group_owners)
+
+        shared_list = []
+        for i in range(len(group_owners)):
+            shared_list.append((group_owners[i], groups_to_share[i], id))
+        
+        # print(shared_list)
+
+
+        share_query = 'INSERT INTO SharedWith (groupOwner, groupName, photoID) VALUES (%s, %s, %s)'
+
+
+            
+
+        # query = 'INSERT INTO SharedWith (groupOwner, groupName, photoID) '
+
+
+
     cursor.close()
     return redirect(url_for('home'))
     
