@@ -28,6 +28,23 @@
 				font-size: 3.5rem;
 			  }
 			}
+
+			.col-lg-4 {
+				padding-bottom: 10;
+				padding-top: 10;
+				text-align: center;
+			}
+			
+			.rate {
+				color:white;
+				background-color: #007bff;
+			}
+
+			.no-friends {
+				padding-top: 100;
+				text-align: center;
+			}
+
 		  </style>
 </head>
 <body>
@@ -55,12 +72,16 @@
 					<li class="nav-item">
 					<a class="nav-link" href="{{url_for('post') }}">Post</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{url_for('logout') }}">Log Out</a>
+					</li>
 				</ul>
 				</div>
 			</nav>
 		</header>
 	<main role='main'>
 		<!-- Feed -->
+		{% if visiblePosts %}
 			<div id="myCarousel" class="carousel slide" data-ride="carousel">
 					<div class="carousel-inner">
 							{% for post in visiblePosts %}
@@ -71,6 +92,16 @@
 									<p>{{post.caption}}</p>
 									<p>{{post.postingDate}}</p>
 									<p><a class="btn btn-lg btn-primary" href="#" role="button">Like</a></p>
+									<div class = "btn btn-lg btn-primary" >
+										<select class = 'rate'>
+											<option>Rate</option>
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option>5</option>
+										</select>
+									</div>
 							  </div>
 							</div>
 							{% endfor %}
@@ -85,52 +116,28 @@
 								  </a>
 					</div>
 			</div>
+			{% else %}
+			<div class="no-friends">
+				<h1>You have no posts to show :( Follow friends to see what they are up to!</h1>
+			</div>
+			{% endif %}
 			<!-- End of  Feed -->
 					<!-- Follow Suggestions -->
 				<div class="container marketing">
-					<div class="row">
-						<form action='/follow' method="POST">
-							<h1>Find Friends To Follow</h1>
+					<div class="col">
+						<form action='/follow' method="POST" class = 'row'>
 							{% for line in usersToFollow %} 
+							{%  if loop.index < 4 %}
 							<div class="col-lg-4">
 							  <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 140x140"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
 							  <h2>{{line.username}}</h2>
 							  <p>{{line.bio}}</p>
-							  <input class="btn btn-secondary" type="submit" name="tofollow" value =  Follow &raquo;/>
+							  <button class="btn btn-secondary" type="submit" name="tofollow" value = {{line.username}}> Follow </button>
 							</div><!-- /.col-lg-4 -->
+							{% endif %}
 							{% endfor %}
 						</form>
 					</div><!-- /.row -->
-				</div>
-					  
-					<form action='/createFriendGroup' method = "POST">
-						<input type = 'submit' value = "createGroup" />
-					</form>
-				</div>
-				<div>
-					<form action = '/like' method = 'POST'>
-						<h1>Your Feed</h1>
-						{% for post in visiblePosts %}
-							<input type = 'hidden' name = 'photoID' value = {{post.photoID}}>
-							<h1>{{post.photoPoster}}</h1>
-							<input type="submit" value = Like />
-							<div class = 'ratings'>
-								<select>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-								</select>
-							</div>
-							<div class = 'more_info'>
-								<ul>
-									<li>{{post.caption}}</li>
-								</ul>
-							</div>
-					</form>
-					
-					{% endfor %}
 				</div>
 	</main>
 

@@ -96,7 +96,7 @@ def registerAuth():
         cursor.execute(ins, (username, hashed_password, firstName, lastName, bio))
         conn.commit()
         cursor.close()
-        return render_template('index.html')
+        return render_template('login.html')
 
 
 @app.route('/home')  # the user's own posts
@@ -202,8 +202,10 @@ def acceptFriendRequests():
 @app.route('/follow', methods=['GET', 'POST'])
 def follow():
     username =  session['username']
+    print("the username is", username)
     cursor = conn.cursor();
     followed = request.form['tofollow']
+    print("we will follow", followed)
     query = 'INSERT Into Follow (username_followed, username_follower, followstatus) VALUES(%s, %s, 0)'
     cursor.execute(query, (followed, username))
     conn.commit()
