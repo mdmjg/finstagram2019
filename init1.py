@@ -302,26 +302,21 @@ def submitPost():
 
     if allFollowers == "0":
         # fetch name of groupOwner using the name of the group and the member
-        fetch_group_owner = 'SELECT owner_username, groupName FROM BelongTo WHERE groupName = %s AND (member_username = %s OR owner_username = %s)'
         groups_to_share = request.form.getlist("toShare")
-        fetch_list = []
         for group in groups_to_share:
-            fetch_list.append((group, username, username))
+            fetch_group_owner = 'SELECT owner_username FROM BelongTo WHERE groupName = %s AND (member_username = %s OR owner_username = %s)'
+            cursor.execute(fetch_group_owner, (group, username, username))
+            group_owner = cursor.fetchone()
+            print(group_owner, group)
+            share_query = 'INSERT INTO SharedWith (groupOwner, groupName, photoID) VALUES (%s, %s, %s)'
         
-        
-        cursor.executemany(fetch_group_owner, fetch_list)
-        group_owners = cursor.fetchall()
-        print("group owners and their group")
-        print(group_owners)
-
-        shared_list = []
-        for i in range(len(group_owners)):
-            shared_list.append((group_owners[i], groups_to_share[i], id))
-        
-        # print(shared_list)
+            cursor.execute(share_query, (group_owner['owner_username'], group, id))
+            conn.commit()
+    cursor.close()
 
 
-        share_query = 'INSERT INTO SharedWith (groupOwner, groupName, photoID) VALUES (%s, %s, %s)'
+        
+
 
 
             
@@ -330,7 +325,6 @@ def submitPost():
 
 
 
-    cursor.close()
     return redirect(url_for('home'))
     
     
