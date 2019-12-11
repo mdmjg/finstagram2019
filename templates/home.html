@@ -27,6 +27,9 @@
 			  .bd-placeholder-img-lg {
 				font-size: 3.5rem;
 			  }
+			  .mt-md-0, .my-md-0 {
+				margin-top: 0!important;
+				}
 			}
 
 			.col-lg-4 {
@@ -44,6 +47,10 @@
 				padding-top: 100;
 				text-align: center;
 			}
+			.form-inline mt-2 mt-md-0 {
+				width: auto;
+				margin-top: 0!important
+			}
 
 		  </style>
 </head>
@@ -56,26 +63,36 @@
 				<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="collapse navbar-collapse" id="navbarCollapse">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item active">
-					<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-					</li>
-					<li class="nav-item">
-					<a class="nav-link" href="{{url_for('getFriendRequests') }}">View Friend Requests</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{url_for('home') }}">Pending Tags</a>
-					</li>
-					<li class="nav-item">
-							<a class="nav-link" href="{{url_for('createFriendGroup') }}"> Create Group</a>
-					</li>
-					<li class="nav-item">
-					<a class="nav-link" href="{{url_for('post') }}">Post</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{url_for('logout') }}">Log Out</a>
-					</li>
-				</ul>
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item active">
+						<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+						<a class="nav-link" href="{{url_for('getFriendRequests') }}">View Friend Requests</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{url_for('home') }}">Pending Tags</a>
+						</li>
+						<li class="nav-item">
+								<a class="nav-link" href="{{url_for('createFriendGroup') }}"> Create Group</a>
+						</li>
+						<li class="nav-item">
+						<a class="nav-link" href="{{url_for('post') }}">Post</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{url_for('logout') }}">Log Out</a>
+						</li>
+							
+					</ul>
+					<form action = '/findUser' method = 'POST' class="form-inline mt-2 mt-md-0">
+						{% if search_error %}
+							<input class="form-control mr-sm-2" type="text" placeholder={{search_error}} aria-label="Search">
+							<button class="btn btn-outline-success my-2 my-sm-0" name = 'user_to_find' type="submit">Search</button>
+						{% else %}
+							<input class="form-control mr-sm-2" type="text" name = 'user_to_find' placeholder="Search" aria-label="Search">
+							<button class="btn btn-outline-success my-2 my-sm-0" name = 'user_to_find' type="submit">Search</button>
+						{% endif %}
+					</form>
 				</div>
 			</nav>
 		</header>
@@ -91,17 +108,24 @@
 									<h1>{{post.photoPoster}}</h1>
 									<p>{{post.caption}}</p>
 									<p>{{post.postingDate}}</p>
-									<p><a class="btn btn-lg btn-primary" href="#" role="button">Like</a></p>
-									<div class = "btn btn-lg btn-primary" >
-										<select class = 'rate'>
-											<option>Rate</option>
-											<option>1</option>
-											<option>2</option>
-											<option>3</option>
-											<option>4</option>
-											<option>5</option>
-										</select>
-									</div>
+									<p>{{post.firstName}}</p>
+									<p>{{post.lastName}}</p>
+									<form action = '/showLikes' method = 'POST'>
+										<p><button class="btn btn-secondary" type="submit" name = 'seeLikes' value = '{{post.photoID}}'> Show Likes</button></p>
+									</form>
+									<form action='/like' method="POST">
+										<div class = "btn btn-lg btn-primary" id = 'rating-select'>
+											<select class = 'rate' name=rating>
+												<option>Rate</option>
+												<option value = 1>1</option>
+												<option value = 2>2</option>
+												<option value = 3>3</option>
+												<option value = 4>4</option>
+												<option value = 5>5</option>
+											</select>
+										</div>
+										<p><button class="btn btn-secondary" type="submit" name = 'like' value = '{{post.photoID}}'> Like</button></p>
+									</form>
 							  </div>
 							</div>
 							{% endfor %}

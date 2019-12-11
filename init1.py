@@ -9,6 +9,11 @@ SALT = 'cs3083'
 app = Flask(__name__)
 
 
+def is_list(value):
+    return isinstance(value, list)
+
+app.jinja_env.filters['islist'] = is_list
+
 
 # todo: make exceptions
 # todo: make the follow update whenever someone follows someone else -> both ways
@@ -147,8 +152,8 @@ def home():
 
     #modify the following to show tagged people too
     visiblePostsQuery = """
-            SELECT Po.photoID, Po.photoPoster, Po.postingDate, Po.caption, Pe.firstName, Pe.lastName
-            FROM Photo Po JOIN Person Pe ON (Po.photoPoster = Pe.username)
+            SELECT DISTINCT Po.photoID, Po.photoPoster, Po.postingDate, Po.caption, Pe.firstName, Pe.lastName, L.username, L.rating
+            FROM Photo Po JOIN Person Pe ON (Po.photoPoster = Pe.username) LEFT OUTER JOIN Likes L USING (photoID)
             WHERE allFollowers = True AND photoPoster IN 
             (SELECT username_followed
             FROM Follow 
@@ -165,13 +170,71 @@ def home():
 
             """
 
+    # include usernames of people who have liked the photo and the rating they gave it
+    # we have the photo`id and we want to get the username and rating of the people who like it
+
+    # we cant include likes and rating in the previous query because then it will only return posts with likes
 
     
     cursor.execute(visiblePostsQuery, (user, user))
     visiblePosts = cursor.fetchall()
+    print(visiblePosts)
+    print(type(visiblePosts[0]['username']))
+
     cursor.close()
 
     return render_template('home.html', username=user, posts=data, usersToFollow = usersToFollow, groups = groups, visiblePosts = visiblePosts)
+@app.route('/findUser', methods = ['GET', 'POST'])
+def findUser():
+    username = session['username']
+    cursor = conn.cursor()
+    to_find = request.form['user_to_find']
+
+    # we want to know if we have followed this person or not, or if our follow is pending
+
+    if_follows = 'SELECT DISTINCT username, followStatus FROM Person P JOIN Follow ON (username = username_followed AND username_follower = %s) WHERE username  = %s'
+    cursor.execute(if_follows, (username, to_find))
+    print(to_find)
+    ret_user = cursor.fetchone()
+    if ret_user: 
+        print(ret_user)
+        return render_template('user.html', user = ret_user)
+    else:
+        find_user = 'SELECT username FROM Person WHERE username = %s'
+        cursor.execute(find_user, to_find) 
+        found_user = cursor.fetchone()
+        if found_user:
+            return render_template('user.html', user = found_user)
+        else:
+            error = "User not found"
+            return redirect(url_for('home', search_error = error))
+        
+
+@app.route('/unfollow', methods =['GET', 'POST'])
+def unfollow():
+    username = session['username']
+    to_unfollow = request.form['tounfollow']
+    print('we will unfollow', to_unfollow)
+    cursor = conn.cursor();
+    query = 'DELETE FROM Follow WHERE username_followed = %s AND username_follower = %s'
+    cursor.execute(query, (to_unfollow, username))
+    conn.commit()
+    cursor.close()
+    return redirect(url_for('home'))
+
+
+
+@app.route('/showLikes', methods = ['GET', 'POST'])
+def showLikes():
+    username = session['username']
+    cursor = conn.cursor();
+    photoID = request.form['seeLikes']
+    get_likes = 'SELECT username, rating FROM Likes WHERE photoID = %s'
+    cursor.execute(get_likes, photoID)
+    likes = cursor.fetchall()
+    cursor.close()
+
+    return render_template('showLikes.html', likes = likes)
 
 
 @app.route('/getFriendRequests', methods =['GET', 'POST'])
@@ -181,8 +244,10 @@ def getFriendRequests():
     query = 'SELECT username_follower FROM Follow WHERE username_followed= %s AND followStatus = 0'
     cursor.execute(query, (username))
     requests = cursor.fetchall()
+    cursor.close()
 
     print("getting friend requests")
+    print(requests)
     return render_template('friendRequests.html', requests = requests)
 
 @app.route('/acceptFriendRequests', methods = ['GET', 'POST'])
@@ -190,11 +255,28 @@ def acceptFriendRequests():
     username = session['username']
     accepted = request.form['acceptFollow']
     cursor = conn.cursor();
+
     query = 'UPDATE Follow SET followstatus = 1 WHERE username_followed = %s AND username_follower = %s'
     cursor.execute(query, (username, accepted))
     conn.commit()   
+    
+
+    
     cursor.close()
     return redirect(url_for('home'))
+
+@app.route('/declineFriendRequests', methods = ['GET', 'POST'])
+def declineFriendRequests():
+    username = session['username']
+    decline = request.form['declineFollow']
+    cursor = conn.cursor();
+
+    query = 'DELETE FROM Follow WHERE username_follower = %s AND username_followed = %s'
+    cursor.execute(query, (decline, username))
+
+    cursor.close()
+    return redirect(url_for('home'))
+
 
 @app.route('/follow', methods=['GET', 'POST'])
 def follow():
@@ -205,16 +287,28 @@ def follow():
     cursor.execute(query, (followed, username))
     conn.commit()
     cursor.close()
-    return redirect(url_for('home'))
+    return redirect(url_for('getFriendRequests'))
 
 @app.route('/like', methods=['GET', 'POST'])
 def like():
     # add a check to see if post has already been liked or not
     username = session['username']
-    photoID = request.form['photoID']
+    photoID = request.form['like']
+
+    # check if like already exists
     cursor = conn.cursor();
-    query = 'INSERT INTO Likes(username, photoID, liketime, rating) VALUES(%s, %s, %s, NULL)'
-    cursor.execute(query, (username, photoID, datetime.datetime.now()))
+    find_like = "SELECT * FROM Likes WHERE photoID = %s AND username = %s"
+    cursor.execute(find_like, (photoID, username))
+    rating = request.form['rating']
+    like_exist = cursor.fetchone()
+    if like_exist:
+        #update rating
+        update_rating = 'UPDATE Likes SET rating = %s WHERE username = %s AND photoId = %s'
+        cursor.execute(update_rating, (rating,username,photoID))
+    else:
+        query = 'INSERT INTO Likes(username, photoID, liketime, rating) VALUES(%s, %s, %s, %s)'
+        cursor.execute(query, (username, photoID, datetime.datetime.now(), rating))
+
     conn.commit()
     cursor.close()
 
@@ -232,20 +326,29 @@ def createFriendGroup():
     cursor.execute(query, (user))
     data = cursor.fetchall()
     cursor.close()
-    return render_template('makeFriendGroup.html', username = user, friends = data)
+    return render_template('makeFriendGroup.html', username = user, friends = data, error = request.args.get('error'))
 
 @app.route('/submitFriendGroup', methods = ['GET', 'POST'])
 def submitFriendGroup():
     user = session['username']
     cursor = conn.cursor()
     groupName = request.form['groupName']
-    query = 'INSERT INTO FriendGroup (groupOwner, groupName, description) VALUES (%s, %s, NULL)'
-    cursor.execute(query, (user, groupName))
-    cursor.close()
+
+    # check if group name with same owner already exists
+    find_group = 'SELECT * FROM FriendGroup WHERE groupName = %s AND groupOwner = %s'
+    cursor.execute(find_group, (groupName, user))
+    existing_group = cursor.fetchone()
+    if existing_group:
+        error = "You have already created a group with this name. Please select another name"
+        return redirect(url_for('createFriendGroup', error = error))
+    else:
+        description = request.form['description']
+        query = 'INSERT INTO FriendGroup (groupOwner, groupName, description) VALUES (%s, %s, %s)'
+        cursor.execute(query, (user, groupName, description))
+        cursor.commit()
 
     # to do: allow users to modify friendgroup by adding / deleting members
 
-    cursor = conn.cursor()
     members = request.form.getlist("toAdd")
     to_insert = []
     for member in members:
@@ -269,7 +372,7 @@ def post():
     cursor.execute(query, (user, user))
     groups = cursor.fetchall()
     cursor.close()
-    print(groups)
+    # print(groups)
 
     return render_template('post.html', username = user, groups = groups)
 
@@ -307,7 +410,6 @@ def submitPost():
             fetch_group_owner = 'SELECT owner_username FROM BelongTo WHERE groupName = %s AND (member_username = %s OR owner_username = %s)'
             cursor.execute(fetch_group_owner, (group, username, username))
             group_owner = cursor.fetchone()
-            print(group_owner, group)
             share_query = 'INSERT INTO SharedWith (groupOwner, groupName, photoID) VALUES (%s, %s, %s)'
         
             cursor.execute(share_query, (group_owner['owner_username'], group, id))

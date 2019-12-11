@@ -39,7 +39,10 @@
 						   <div class="form-group">
 								<label for="exampleInputEmail1">Bio</label>
 								<input type="text" name="bio"  class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter Bio">
-							 </div>
+                      </div>
+                        {% if error %}
+                           <p class="error"><strong>Error:</strong> {{error}}</p>
+                        {% endif %}
                            <div class="col-md-12 text-center mb-3">
                               <button type="submit" class=" btn btn-block mybtn btn-primary tx-tfm">Get Started For Free</button>
                            </div>
@@ -57,37 +60,3 @@
          
 </body>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<html>
-<head>
-</head>
-<body>
-	{% if error %}
-		<p class="error"><strong>Error:</strong> {{error}}</p>
-	{% endif %}
-</form>
-
-<a href="/">Go back</a>
-
-</body>
-
-
-</html>
