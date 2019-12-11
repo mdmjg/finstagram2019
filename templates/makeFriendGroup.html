@@ -1,44 +1,98 @@
 <html>
     <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src= "https://code.jquery.com/jquery-1.12.4.min.js"> </script>
+        <style>
+                .bd-placeholder-img {
+                  font-size: 1.125rem;
+                  text-anchor: middle;
+                  -webkit-user-select: none;
+                  -moz-user-select: none;
+                  -ms-user-select: none;
+                  user-select: none;
+                }
+
+
+                .form-wrapper {
+                    padding-top: 100;
+                    margin: auto;
+                    width: 80%;
+                    justify-content: center;
+                }
+
+              </style>
     </head>
     <body>
-    <form action="/submitFriendGroup" method="POST">
-        <input type="text" name = "groupName" placeholder="Name of Group" required/> </br>
-        <h1>Select friends to add to your group</h1>
-        {% for line in friends %} 
-            <input type="checkbox" name="friend" value={{line.username_followed}}> {{line.username_followed}}
-        {% endfor %}
-        <input type="submit" value = CreateGroup />
-    </form>
-    
+        <header>
+                <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                        <a class="navbar-brand" href="#">Finstagram</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarCollapse">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                            <a class="nav-link" href="{{url_for('home') }}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('getFriendRequests') }}">View Friend Requests</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{url_for('home') }}">Pending Tags</a>
+                            </li>
+                            <li class="nav-item">
+                                    <a class="nav-link" href="#"> Create Group <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('post') }}">Post</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{url_for('logout') }}">Log Out</a>
+                            </li>
+                        </ul>
+                        </div>
+                    </nav>
+        </header>
+            <div class = 'form-wrapper'>
+                <form action = '/submitFriendGroup' method = "POST">
+                    <div class="form-group row">
+                        <label for="inputPassword3" class="col-sm-2 col-form-label">Name of Group</label>
+                        <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputPassword3" name = 'groupName' placeholder="Name of Group" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword3" class="col-sm-2 col-form-label">Descripton</label>
+                        <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputPassword3" name = 'description' placeholder="Description" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-2">Choose Members to Add</div>
+                        <div class="col-sm-10">
+                            {% for friend in friends %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="gridCheck1" name = 'toAdd' value = {{friend.username_followed}}>
+                                <label class="form-check-label" for="gridCheck1">{{friend.username_followed}}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </div>
+                    {% if error %}
+                        <p class="error"><strong>Error:</strong> {{error}}</p>
+                    {% endif %}
+                </form>
+            </div>
     <style type="text/css">
         table, th, td{
             border: 1px solid black;
         }
     </style>
-    
-    Here are your posts:
-    
-    <!-- <table>
-        <th>Time</th>
-        <th>Post</th>
-    
-    {% for line in posts %}
-        <tr>
-            <td>{{line.photoID}}</td>
-            <td>{{line.postingdate}}</td>
-            <td>{{line.filepath}}</td>
-            <td>{{line.caption}}</td>
-        </tr>
-    {% endfor %}
-    </table>
-    
-    <a href="/select_blogger">Select a blogger</a>
-    <br>
-    <a href="/logout">Logout</a>
-    
-    </body> -->
-    
-    
-    </html>
+</body>
+</html>
     
