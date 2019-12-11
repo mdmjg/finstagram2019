@@ -152,8 +152,8 @@ def home():
 
     #modify the following to show tagged people too
     visiblePostsQuery = """
-            SELECT DISTINCT Po.photoID, Po.photoPoster, Po.postingDate, Po.caption, Pe.firstName, Pe.lastName, L.username, L.rating
-            FROM Photo Po JOIN Person Pe ON (Po.photoPoster = Pe.username) LEFT OUTER JOIN Likes L USING (photoID)
+            SELECT DISTINCT Po.photoID, Po.photoPoster, Po.postingDate, Po.caption, Pe.firstName, Pe.lastName
+            FROM Photo Po JOIN Person Pe ON (Po.photoPoster = Pe.username) 
             WHERE allFollowers = True AND photoPoster IN 
             (SELECT username_followed
             FROM Follow 
@@ -178,8 +178,6 @@ def home():
     
     cursor.execute(visiblePostsQuery, (user, user))
     visiblePosts = cursor.fetchall()
-    print(visiblePosts)
-    print(type(visiblePosts[0]['username']))
 
     cursor.close()
 
@@ -194,7 +192,6 @@ def findUser():
 
     if_follows = 'SELECT DISTINCT username, followStatus FROM Person P JOIN Follow ON (username = username_followed AND username_follower = %s) WHERE username  = %s'
     cursor.execute(if_follows, (username, to_find))
-    print(to_find)
     ret_user = cursor.fetchone()
     if ret_user: 
         print(ret_user)
@@ -247,7 +244,6 @@ def getFriendRequests():
     cursor.close()
 
     print("getting friend requests")
-    print(requests)
     return render_template('friendRequests.html', requests = requests)
 
 @app.route('/acceptFriendRequests', methods = ['GET', 'POST'])
@@ -287,7 +283,7 @@ def follow():
     cursor.execute(query, (followed, username))
     conn.commit()
     cursor.close()
-    return redirect(url_for('getFriendRequests'))
+    return redirect(url_for('home'))
 
 @app.route('/like', methods=['GET', 'POST'])
 def like():
@@ -345,7 +341,7 @@ def submitFriendGroup():
         description = request.form['description']
         query = 'INSERT INTO FriendGroup (groupOwner, groupName, description) VALUES (%s, %s, %s)'
         cursor.execute(query, (user, groupName, description))
-        cursor.commit()
+        conn.commit()
 
     # to do: allow users to modify friendgroup by adding / deleting members
 
@@ -368,7 +364,7 @@ def submitFriendGroup():
 def post():
     user = session['username']
     cursor = conn.cursor();
-    query = 'SELECT groupName FROM BelongTo WHERE member_username = %s OR owner_username = %s'
+    query = 'SELECT DISTINCT groupName, owner_username FROM BelongTo WHERE member_username = %s OR owner_username = %s'
     cursor.execute(query, (user, user))
     groups = cursor.fetchall()
     cursor.close()
