@@ -24,7 +24,7 @@ conn = pymysql.connect(host='localhost',
                        port=3306,
                        user='root',
                        password='',
-                       db='finstagramproject',
+                       db='finstagramproject2',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -344,8 +344,6 @@ def submitFriendGroup():
         cursor.execute(query, (user, groupName, description))
         conn.commit()
 
-    # to do: allow users to modify friendgroup by adding / deleting members
-
     members = request.form.getlist("toAdd")
     to_insert = []
     for member in members:
@@ -375,7 +373,7 @@ def post():
 
 @app.route('/submitpost', methods=['GET', 'POST'])
 def submitPost():
-    username = session['username']
+    user = session['username']
     cursor = conn.cursor();
     caption = request.form['caption']
     filename = request.form['filename']
@@ -393,9 +391,11 @@ def submitPost():
     # todo: show images
 
     query = 'INSERT INTO Photo (postingDate, filepath, allFollowers, caption, photoPoster, binaryPhoto) VALUES(%s, %s, %s, %s, %s, %s)'
-    cursor.execute(query, (postingDate, filename, allFollowers, caption, username, binary))
+    cursor.execute(query, (postingDate, filename, allFollowers, caption, user, binary))
     id = cursor.lastrowid
     conn.commit()
+
+    # query = 'INSERT INTO SharedWith (groupOwner, groupName, photoID) '
 
     if allFollowers == "0":
         # fetch name of groupOwner using the name of the group and the member
@@ -408,11 +408,39 @@ def submitPost():
 
             cursor.execute(share_query, (group_owner['owner_username'], group, id))
             conn.commit()
+
+    tags = request.form['tagged']
+    tagsList = tags.split(",")
+    error = False
+    notTagged = []
+    for i in range(len(tagsList)):
+        tagsList[i] = tagsList[i].strip()
+    if (user in tagsList):
+        tagQuery = "INSERT INTO tagged VALUES (%s, %s, TRUE)"
+        tagsList.remove(user)
+        cursor.execute(tagQuery, (user, id))
+        conn.commit()
+    else:
+        if not tagsList:
+            for username in tagsList:
+                isFollowing = 'SELECT username_followed FROM follow WHERE username_follower = %s AND followstatus = TRUE'
+                isShared = 'SELECT photoID FROM sharedWith WHERE (%s, groupOwner, groupName) IN (SELECT * FROM belongTo)'
+                visibleQuery = 'SELECT photoID FROM Photo WHERE photoID= %s AND ((photoPoster IN (' + isFollowing + ') AND allFollowers = TRUE) OR (' + isShared + '))'
+                cursor.execute(visibleQuery, (id, username, username))
+                visible = cursor.fetchone()
+                if visible == None:
+                    error = True
+                    notTagged.append(username)
+                elif id == visible["photoID"]:
+                    tagQuery = "INSERT INTO tagged VALUES (%s, %s, FALSE)"
+                    cursor.execute(tagQuery, (username, id))
+                    conn.commit()
+                else:
+                    error = True
+                    notTagged.append(username)
     cursor.close()
+    return render_template("submitpost.html", error=error, notTagged=notTagged)
 
-    # query = 'INSERT INTO SharedWith (groupOwner, groupName, photoID) '
-
-    return redirect(url_for('home'))
 
 
 def convertToBinaryData(filename):
@@ -451,6 +479,36 @@ def show_posts():
 def logout():
     session.pop('username')
     return redirect('/')
+
+@app.route('/tagRequests', methods = ["GET", "POST"])
+def tagRequests():
+    user = session['username']
+    cursor = conn.cursor();
+    query = "SELECT photoID, photoPoster, caption, postingdate FROM Tagged NATURAL JOIN Photo WHERE username = %s AND tagStatus = 0 ORDER BY postingdate DESC"
+    cursor.execute(query, (user))
+    tagRequests = cursor.fetchall()
+    return render_template("tagRequests.html",tagsPending = tagRequests )
+
+@app.route('/submitTagRequests', methods =["GET", "POST"])
+def submitTagRequests():
+    user = session['username']
+    cursor = conn.cursor();
+    #####################################THIS LINE DOESN'T WORK###################################
+    photo = request.form.get("photoID")
+    ##############################################################################################
+    tagAction = request.form.get("tagAction")
+    if (tagAction == '1'):
+        print("in 1")
+        query = "UPDATE tagged SET tagStatus = 1 WHERE username = %s AND photoID = %s"
+        cursor.execute(query, (user, photo))
+        conn.commit()
+    elif (tagAction == '0'):
+        print("in 0")
+        query = "DELETE FROM Tagged WHERE username = %s, photoID = %s"
+        cursor.execute(query, (user, photo))
+        conn.commit()
+    cursor.close()
+    return redirect(url_for("tagRequests"))
 
 
 app.secret_key = 'some key that you will never guess'

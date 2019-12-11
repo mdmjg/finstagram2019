@@ -1,7 +1,7 @@
 <html>
 <head>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-	<script src= "https://code.jquery.com/jquery-1.12.4.min.js"> </script>
+	<script src= "https://code.jquery.com/jquery-1.12.4.min.js"> </script> 
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 	    <!-- Favicons -->
@@ -22,26 +22,33 @@
 			  -ms-user-select: none;
 			  user-select: none;
 			}
-
+	  
 			@media (min-width: 768px) {
 			  .bd-placeholder-img-lg {
 				font-size: 3.5rem;
 			  }
 			}
+
+            .col {
+                padding-top: 100;
+            }
+
 			.col-lg-4 {
 				padding-bottom: 10;
-				padding-top: 100;
+				padding-top: 10;
 				text-align: center;
+                margin: auto;
 			}
-
+			
 			.rate {
 				color:white;
 				background-color: #007bff;
 			}
-			.no-friends {
+            .no-friends {
 				padding-top: 100;
 				text-align: center;
 			}
+
 		  </style>
 </head>
 <body>
@@ -58,7 +65,7 @@
 					<a class="nav-link" href="{{url_for('home') }}">Home</a>
 					</li>
 					<li class="nav-item">
-					<a class="nav-link" href="{{url_for('getFriendRequests') }}">View Friend Requests</a>
+					<a class="nav-link" href="#">View Friend Requests <span class="sr-only">(current)</span> </a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="{{url_for('home') }}">Pending Tags</a>
@@ -68,32 +75,51 @@
 					</li>
 					<li class="nav-item">
 					<a class="nav-link" href="{{url_for('post') }}">Post</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{url_for('logout') }}">Log Out</a>
-					</li>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('logout') }}">Log Out</a>
+                    </li>
 				</ul>
 				</div>
 			</nav>
-    </header>
-    <div class="container marketing">
-        <div class="col">
-            {% if likes %}
-                {% if likes | islist %}
-                    {% for user in likes %}
-                        <div class="col-lg-4">
-                        <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 140x140"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
-                        <h2>{{user.username}}</h2>
-                        <p>{{user.rating}}</p>
-                        </div><!-- /.col-lg-4 -->
-                    {% endfor %}
-                {% endif %}
-            {% endif %}
-            </form>
-        </div><!-- /.row -->
-    </div>
+		</header>
+	<main role='main'>
+                <!-- Follow Requests -->
+				<div class="container marketing">
+					<div class="col">
+                        {% if requests %}
+							{% for line in requests %} 
+							<div class="col-lg-4">
+							  <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 140x140"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"/><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+							  <h2>{{line.username_follower}}</h2>
+							  <p>{{line.bio}}</p>
+							  <form action='/acceptFriendRequests' method="POST" class = 'row'>
+									<button class="btn btn-secondary" type="submit" name="acceptFollow" value={{line.username_follower}}> Accept </button>
+								</form>
+								<form action='/declineFriendRequests' method="POST" class = 'row'>
+									<button class="btn btn-secondary" type="submit" name="declineFollow" value={{line.username_follower}}> Decline </button>
+								</form>
+							</div><!-- /.col-lg-4 -->
+							{% endfor %}
+                        {% else %}
+                        <div class="no-friends">
+                            <h1>No pending requests</h1>
+                        </div>
+                        {% endif %}
+					</div><!-- /.row -->
+				</div>
+	</main>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
 
 
 
-  </body>
-  </html>
+
+
+
+
+

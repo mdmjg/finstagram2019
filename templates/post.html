@@ -108,6 +108,14 @@
                         <div class="col-sm-10">
                         <input type="radio" id = 'someFollowers' class="form-control" id="inputPassword3" name = 'allFollowers' value =0>
                         </div>
+                        <label for="inputPassword3" class="col-sm-2 col-form-label">Tag Friends</label>
+                        <div class="col-sm-10">
+                        <input type="radio" id="tagFriends" class="form-control" id="inputPassword3" name="tagFriends" value=1>
+                        </div>
+                        <label for="inputPassword3" class="col-sm-2 col-form-label">No Tags</label>
+                        <div class="col-sm-10">
+                        <input type="radio" id="noTags" class="form-control" id="inputPassword3" name="tagFriends" value=0>
+                        </div>
                     </div>
                     <div class="form-group row" id = 'groupName'>
                         <div class="col-sm-2">Choose Groups to Share with</div>
@@ -118,6 +126,12 @@
                                 <label class="form-check-label" for="gridCheck1">{{group.groupName}} Owner: {{group.owner_username}}</label>
                             </div>
                             {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group row" id="Tag">
+                        <div class="col-sm-2"> Tag: </div>
+                        <div class="for-group row" id="tagBox">
+                            <input type="text" name="tagged" id="toTag">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -135,6 +149,17 @@
                                         $('#groupName').hide();
                                     })
                                 });
+                    </script>
+                    <script type="text/javascript">
+    	                $(document).ready(function(){
+        	                $("#Tag").hide();
+                            $('#tagFriends').on('change', function(){
+            	                $('#Tag').show();
+                            })
+                            $('#noTags').on('change', function(){
+            	                $('#Tag').hide();
+                            })
+                        });
                     </script>
                 </form>
         </div>
