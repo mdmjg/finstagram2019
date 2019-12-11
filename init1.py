@@ -343,7 +343,6 @@ def submitFriendGroup():
         cursor.execute(query, (user, groupName, description))
         conn.commit()
 
-    # to do: allow users to modify friendgroup by adding / deleting members
 
     members = request.form.getlist("toAdd")
     to_insert = []
