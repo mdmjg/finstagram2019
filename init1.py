@@ -496,11 +496,11 @@ def submitTagRequests():
     photo = request.form.get("photoID")
     tagAction = request.form.get("tagAction")
     if (tagAction == '1'):
-        query = "UPDATE tagged SET tagStatus = 1 WHERE username = %s AND photoID = %s"
+        query = 'UPDATE tagged SET tagStatus = 1 WHERE username = %s AND photoID = %s'
         cursor.execute(query, (user, photo))
         conn.commit()
     elif (tagAction == '0'):
-        query = "DELETE FROM Tagged WHERE username = %s, photoID = %s"
+        query = 'DELETE FROM Tagged WHERE username = %s AND photoID = %s'
         cursor.execute(query, (user, photo))
         conn.commit()
     cursor.close()
