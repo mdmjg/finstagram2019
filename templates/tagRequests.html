@@ -124,27 +124,5 @@
 		border: 1px solid black;
 	}
 </style>
-
-
-{% for line in tagsPending %}
-    {{line.photoPoster}}, tagged you in a their photo "{{line.caption}}" on {{line.postingdate}}
-    <form action="/submitTagRequests" method="POST">
-        <input type="hidden" name="photoID" value="{{line.photoID}}" id="photoID">
-            <script type="text/javascript">
-                function myFunction(){
-                      var id = line.photoID;
-                      document.getElementById("photoID").value = id;
-                      }
-    </script>
-        <select name="tagAction">
-            <option value="None">  </option>
-            <option value=1> Accept</option>
-            <option value=0>Decline</option>
-        </select>
-        <input type="submit" value="submit">
-    </form>
-    <br>
-{% endfor %}
-
 </body>
 </html>
