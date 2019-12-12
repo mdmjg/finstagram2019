@@ -366,7 +366,6 @@ def post():
     cursor.execute(query, (user, user))
     groups = cursor.fetchall()
     cursor.close()
-    # print(groups)
 
     return render_template('post.html', username=user, groups=groups)
 
