@@ -402,7 +402,7 @@ def submitPost():
         groups_to_share = request.form.getlist("toShare")
         for group in groups_to_share:
             fetch_group_owner = 'SELECT owner_username FROM BelongTo WHERE groupName = %s AND (member_username = %s OR owner_username = %s)'
-            cursor.execute(fetch_group_owner, (group, username, username))
+            cursor.execute(fetch_group_owner, (group, user, user))
             group_owner = cursor.fetchone()
             share_query = 'INSERT INTO SharedWith (groupOwner, groupName, photoID) VALUES (%s, %s, %s)'
 
@@ -421,7 +421,7 @@ def submitPost():
         cursor.execute(tagQuery, (user, id))
         conn.commit()
     else:
-        if not tagsList:
+        if tagsList:
             for username in tagsList:
                 isFollowing = 'SELECT username_followed FROM follow WHERE username_follower = %s AND followstatus = TRUE'
                 isShared = 'SELECT photoID FROM sharedWith WHERE (%s, groupOwner, groupName) IN (SELECT * FROM belongTo)'
@@ -496,12 +496,10 @@ def submitTagRequests():
     photo = request.form.get("photoID")
     tagAction = request.form.get("tagAction")
     if (tagAction == '1'):
-        print("in 1")
         query = "UPDATE tagged SET tagStatus = 1 WHERE username = %s AND photoID = %s"
         cursor.execute(query, (user, photo))
         conn.commit()
     elif (tagAction == '0'):
-        print("in 0")
         query = "DELETE FROM Tagged WHERE username = %s, photoID = %s"
         cursor.execute(query, (user, photo))
         conn.commit()

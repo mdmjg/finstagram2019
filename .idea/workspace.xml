@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ea7445f2-f13d-4d0f-89a5-027a9616f119" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/init1.py" beforeDir="false" afterPath="$PROJECT_DIR$/init1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tagRequests.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tagRequests.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/submitpost.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/submitpost.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/init1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="417">
-              <caret line="494" column="27" selection-start-line="494" selection-start-column="27" selection-end-line="494" selection-end-column="27" />
+            <state relative-caret-position="170">
+              <caret line="439" column="46" selection-start-line="439" selection-start-column="46" selection-end-line="439" selection-end-column="46" />
               <folding>
                 <element signature="e#23#100#0" expanded="true" />
               </folding>
@@ -25,11 +25,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/submitpost.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="40">
-              <caret line="69" column="14" selection-start-line="69" selection-start-column="14" selection-end-line="69" selection-end-column="14" />
+            <state relative-caret-position="196">
+              <caret line="103" column="11" selection-start-line="103" selection-start-column="11" selection-end-line="103" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -119,10 +119,10 @@
         <option value="$PROJECT_DIR$/templates/register.html" />
         <option value="$PROJECT_DIR$/templates/showLikes.html" />
         <option value="$PROJECT_DIR$/templates/post.html" />
-        <option value="$PROJECT_DIR$/templates/submitpost.html" />
         <option value="$PROJECT_DIR$/templates/home.html" />
         <option value="$PROJECT_DIR$/templates/tagRequests.html" />
         <option value="$PROJECT_DIR$/init1.py" />
+        <option value="$PROJECT_DIR$/templates/submitpost.html" />
       </list>
     </option>
   </component>
@@ -326,13 +326,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/submitpost.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="69" column="14" selection-start-line="69" selection-start-column="14" selection-end-line="69" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/tagRequests.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -342,11 +335,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/init1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="417">
-          <caret line="494" column="27" selection-start-line="494" selection-start-column="27" selection-end-line="494" selection-end-column="27" />
+        <state relative-caret-position="170">
+          <caret line="439" column="46" selection-start-line="439" selection-start-column="46" selection-end-line="439" selection-end-column="46" />
           <folding>
             <element signature="e#23#100#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/submitpost.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="103" column="11" selection-start-line="103" selection-start-column="11" selection-end-line="103" selection-end-column="11" />
         </state>
       </provider>
     </entry>

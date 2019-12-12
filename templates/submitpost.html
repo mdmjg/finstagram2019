@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<script src= "https://code.jquery.com/jquery-1.12.4.min.js"> </script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
@@ -15,14 +14,47 @@
 	<meta name="msapplication-config" content="/docs/4.4/assets/img/favicons/browserconfig.xml">
 	<meta name="theme-color" content="#563d7c">
 	<style>
-        .postResults {
+			.bd-placeholder-img {
+			  font-size: 1.125rem;
+			  text-anchor: middle;
+			  -webkit-user-select: none;
+			  -moz-user-select: none;
+			  -ms-user-select: none;
+			  user-select: none;
+			}
+			@media (min-width: 768px) {
+			  .bd-placeholder-img-lg {
+				font-size: 3.5rem;
+			  }
+			  .mt-md-0, .my-md-0 {
+				margin-top: 0!important;
+				}
+			}
+			.col-lg-4 {
+				padding-bottom: 10;
+				padding-top: 10;
+				text-align: center;
+			}
+			.rate {
+				color:white;
+				background-color: #007bff;
+			}
+			.postSuccess {
 				padding-top: 100;
 				text-align: center;
-		}
-    </style>
+			}
+			.tagsFailed {
+			    padding-top: 100;
+			    text-align: center;
+			}
+			.form-inline mt-2 mt-md-0 {
+				width: auto;
+				margin-top: 0!important
+			}
+		  </style>
 </head>
 <body>
-    	<header>
+	<header>
 		<!-- NavBar -->
 			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 				<a class="navbar-brand" href="#">Finstagram</a>
@@ -38,7 +70,7 @@
 						<a class="nav-link" href="{{url_for('getFriendRequests') }}">View Friend Requests</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{{url_for('home') }}">Pending Tags</a>
+							<a class="nav-link" href="{{url_for('tagRequests') }}">Pending Tags</a>
 						</li>
 						<li class="nav-item">
 								<a class="nav-link" href="{{url_for('createFriendGroup') }}"> Create Group</a>
@@ -63,18 +95,23 @@
 				</div>
 			</nav>
 		</header>
+	<main role='main'>
+        {% if error == True %}
+            <div class="tagsFailed">
+                <h1>Your photo was posted but, </h1>
+            </div>
+             {% for username in notTagged%}
+        <h3>{{username}} can't be tagged since they don't have access to the photo </h3>
+             {% endfor %}
+        {% else %}
+			<div class="PostSuccess">
+				<h1>You posted successfully!</h1>
+			</div>
+        {% endif %}
+	</main>
 
-{% if error == True %}
-        <div class="postResults">
-            <h1> Your photo was posted but, </h1> <br>
-        </div>
-        {% for username in notTagged%}
-             <h1> {{username}} can't be tagged since they don't have access to the photo </h1><br>
-        {% endfor %}
-{% else %}
-         <div class="postResults">
-            <h1> Your photo was posted successfully! </h1>
-        </div>
-{% endif %}
-</body>
-</html>
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
