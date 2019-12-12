@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en"> <head>
+<html>
+<head>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<script src= "https://code.jquery.com/jquery-1.12.4.min.js"> </script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -13,9 +13,44 @@
 	<link rel="icon" href="/docs/4.4/assets/img/favicons/favicon.ico">
 	<meta name="msapplication-config" content="/docs/4.4/assets/img/favicons/browserconfig.xml">
 	<meta name="theme-color" content="#563d7c">
+	<style>
+			.bd-placeholder-img {
+			  font-size: 1.125rem;
+			  text-anchor: middle;
+			  -webkit-user-select: none;
+			  -moz-user-select: none;
+			  -ms-user-select: none;
+			  user-select: none;
+			}
+			@media (min-width: 768px) {
+			  .bd-placeholder-img-lg {
+				font-size: 3.5rem;
+			  }
+			  .mt-md-0, .my-md-0 {
+				margin-top: 0!important;
+				}
+			}
+			.col-lg-4 {
+				padding-bottom: 10;
+				padding-top: 10;
+				text-align: center;
+			}
+			.rate {
+				color:white;
+				background-color: #007bff;
+			}
+			.no-friends {
+				padding-top: 100;
+				text-align: center;
+			}
+			.form-inline mt-2 mt-md-0 {
+				width: auto;
+				margin-top: 0!important
+			}
+		  </style>
 </head>
 <body>
-    	<header>
+	<header>
 		<!-- NavBar -->
 			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 				<a class="navbar-brand" href="#">Finstagram</a>
@@ -56,9 +91,40 @@
 				</div>
 			</nav>
 		</header>
-{% if not tagsPending %}
-    No pending tags!
-{% endif %}
+	<main role='main'>
+        {% if not tagsPending %}
+			<div class="no-friends">
+				<h1>No pending tags!</h1>
+			</div>
+        {% endif %}
+
+        {% for line in tagsPending %}
+            {{line.photoPoster}}, tagged you in a their photo "{{line.caption}}" on {{line.postingdate}}
+            <form action="/submitTagRequests" method="POST">
+                <input type="hidden" name="photoID" value="{{line.photoID}}" id="photoID">
+                <script type="text/javascript">
+                    function myFunction(){
+                      var id = line.photoID;
+                      document.getElementById("photoID").value = id;
+                    }
+                </script>
+                <select name="tagAction">
+                    <option value="None">  </option>
+                    <option value=1> Accept</option>
+                    <option value=0>Decline</option>
+                </select>
+                <input type="submit" value="submit">
+            </form>
+            <br>
+        {% endfor %}
+	</main>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
 
 {% for line in tagsPending %}
     {{line.photoPoster}}, tagged you in a their photo "{{line.caption}}" on {{line.postingdate}}
