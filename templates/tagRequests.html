@@ -61,14 +61,15 @@
 {% endif %}
 
 {% for line in tagsPending %}
-<form action="/submitTagRequests" method="POST"> <input type="hidden" name="photoID" value="blah" id="photoID">
-    <script type="text/javascript"> var id = line.photoID;
-                      document.getElementById("photoID").value = id;
-    </script>
-</form>
-
     {{line.photoPoster}}, tagged you in a their photo "{{line.caption}}" on {{line.postingdate}}
     <form action="/submitTagRequests" method="POST">
+        <input type="hidden" name="photoID" value="{{line.photoID}}" id="photoID">
+            <script type="text/javascript">
+                function myFunction(){
+                      var id = line.photoID;
+                      document.getElementById("photoID").value = id;
+                      }
+    </script>
         <select name="tagAction">
             <option value="None">  </option>
             <option value=1> Accept</option>

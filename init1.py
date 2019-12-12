@@ -493,9 +493,7 @@ def tagRequests():
 def submitTagRequests():
     user = session['username']
     cursor = conn.cursor();
-    #####################################THIS LINE DOESN'T WORK###################################
     photo = request.form.get("photoID")
-    ##############################################################################################
     tagAction = request.form.get("tagAction")
     if (tagAction == '1'):
         print("in 1")

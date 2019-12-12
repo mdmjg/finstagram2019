@@ -2,22 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ea7445f2-f13d-4d0f-89a5-027a9616f119" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/19275534911_f813affb13_b.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DB Project Test Data.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Flight Itinerary for Maria Jaramillo Gutierrez 2019-12-09.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Flintstones005.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/a60297ad-0bf4-4c8a-b637-c7e1a18e09fd_x300.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/friendRequests.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/user.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/init1.py" beforeDir="false" afterPath="$PROJECT_DIR$/init1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/possibleQueries.txt" beforeDir="false" afterPath="$PROJECT_DIR$/possibleQueries.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/makeFriendGroup.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/makeFriendGroup.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/post.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/post.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/selectGroup.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/selectGroup.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/showLikes.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/showLikes.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tagRequests.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tagRequests.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/init1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="686">
-              <caret line="510" column="43" selection-start-line="510" selection-start-column="43" selection-end-line="510" selection-end-column="43" />
+            <state relative-caret-position="417">
+              <caret line="494" column="27" selection-start-line="494" selection-start-column="27" selection-end-line="494" selection-end-column="27" />
               <folding>
                 <element signature="e#23#100#0" expanded="true" />
               </folding>
@@ -57,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/tagRequests.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
-              <caret line="61" column="8" selection-start-line="61" selection-start-column="8" selection-end-line="61" selection-end-column="8" />
+            <state relative-caret-position="136">
+              <caret line="69" column="68" lean-forward="true" selection-start-line="69" selection-start-column="68" selection-end-line="69" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -134,9 +120,9 @@
         <option value="$PROJECT_DIR$/templates/showLikes.html" />
         <option value="$PROJECT_DIR$/templates/post.html" />
         <option value="$PROJECT_DIR$/templates/submitpost.html" />
-        <option value="$PROJECT_DIR$/init1.py" />
         <option value="$PROJECT_DIR$/templates/home.html" />
         <option value="$PROJECT_DIR$/templates/tagRequests.html" />
+        <option value="$PROJECT_DIR$/init1.py" />
       </list>
     </option>
   </component>
@@ -333,16 +319,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/init1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="686">
-          <caret line="510" column="43" selection-start-line="510" selection-start-column="43" selection-end-line="510" selection-end-column="43" />
-          <folding>
-            <element signature="e#23#100#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/home.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -359,8 +335,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/tagRequests.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
-          <caret line="61" column="8" selection-start-line="61" selection-start-column="8" selection-end-line="61" selection-end-column="8" />
+        <state relative-caret-position="136">
+          <caret line="69" column="68" lean-forward="true" selection-start-line="69" selection-start-column="68" selection-end-line="69" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/init1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="417">
+          <caret line="494" column="27" selection-start-line="494" selection-start-column="27" selection-end-line="494" selection-end-column="27" />
+          <folding>
+            <element signature="e#23#100#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
